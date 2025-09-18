@@ -1,4 +1,3 @@
-// domain/entities/user.entity.ts
 
 export interface UserSession {
   token: string;
@@ -12,7 +11,7 @@ export class UserEntity {
     public firstName: string,
     public lastName: string,
     public email: string,
-    public password: string,       // en la entidad real sería hash
+    public password: string,      
     public role: 'admin' | 'user' | 'moderator' = 'user',
     public username?: string,
     public phone?: string,

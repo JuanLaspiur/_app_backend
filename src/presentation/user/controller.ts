@@ -18,8 +18,14 @@ export class UserController {
         this.userRepository.getAllUsers()
             .then(user => res.status(200).json(user))
             .catch(error => this.handleError(error, res))
-
     }
+
+    getAllActiveUsers(req: Request, res: Response) {
+        this.userRepository.getAllActiveUsers()
+            .then(user => res.status(200).json(user))
+            .catch(error => this.handleError(error, res))
+    }
+
     getUserById(req: Request, res: Response) {
         const id = req.params.id;
         const [error, dto] = GetUserByIdDto.create({ userId: id });
@@ -27,7 +33,6 @@ export class UserController {
         this.userRepository.getUserById(dto!)
             .then(user => res.status(200).json(user))
             .catch(error => this.handleError(error, res))
-
     }
 
     updateUserById(req: Request, res: Response) {
@@ -38,7 +43,6 @@ export class UserController {
         this.userRepository.updateUserById(dto!)
             .then(user => res.status(200).json(user))
             .catch(error => this.handleError(error, res))
-
     }
 
 }

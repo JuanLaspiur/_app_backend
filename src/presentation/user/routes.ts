@@ -11,6 +11,7 @@ export class UserRoutes {
 
         const router = Router();
         router.get('/getAll', controller.getAllUsers.bind(controller));
+        router.get('/getAllActive',controller.getAllActiveUsers.bind(controller));
         router.get('/userId/:id', controller.getUserById.bind(controller));
         router.put('/userId/:id', controller.updateUserById.bind(controller));
 

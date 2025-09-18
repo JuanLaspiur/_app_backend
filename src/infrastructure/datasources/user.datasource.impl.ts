@@ -8,16 +8,25 @@ import { UserMapper } from "../mappers/user.mapper";
 export class UserDataSourceImpl implements UserDataSource {
 
 
+
     async getAllUsers(): Promise<UserEntity[]> {
         const users = await UserModel.find();
         return UserMapper.toEntities(users);
     }
+    async getAllActiveUsers(): Promise<UserEntity | UserEntity[]> {
+        const users = await UserModel.find({isActive:true});
+        return UserMapper.toEntities(users);
+    }
 
-    async getUserById(dto: GetUserByIdDto): Promise<UserEntity | null> {
+    async getUserById(dto: GetUserByIdDto): Promise<UserEntity> {
         const user = await UserModel.findById(dto.userId);
-        if (!user) return null;
+        if (!user) {
+            throw CustomError.notFound("User not found");
+        }
         return UserMapper.userEntityFromObject(user);
     }
+
+
     async updateUserById(dto: UpdateUserDto): Promise<UserEntity> {
         try {
             const { id, ...updateData } = dto;

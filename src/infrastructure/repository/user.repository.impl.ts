@@ -12,7 +12,11 @@ export class UserRepositoryImpl implements UserRepository {
     getAllUsers(): Promise<UserEntity | UserEntity[]> {
         return this.userDataSource.getAllUsers();
     }
-    getUserById(dto: GetUserByIdDto): Promise<UserEntity | null> {
+    getAllActiveUsers(): Promise<UserEntity | UserEntity[]> {
+        return this.userDataSource.getAllActiveUsers();
+    }
+
+    getUserById(dto: GetUserByIdDto): Promise<UserEntity> {
         return this.userDataSource.getUserById(dto);
     }
 

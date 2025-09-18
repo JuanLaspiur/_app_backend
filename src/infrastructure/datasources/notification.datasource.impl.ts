@@ -1,8 +1,9 @@
+import jwt from "jsonwebtoken";
 import { NotificationModel } from "../../data/mogodb";
 import { NotificationDataSource, NotificationEntity } from "../../domain";
 import { CreateNotificationDto } from "../../domain/dtos/notification/createNotification.dto";
-import { GetAllUserNotificationDto } from "../../domain/dtos/notification/getAllUserNotification";
 import { UpdateNotificationDto } from "../../domain/dtos/notification/updateNotification.dto";
+import { jwtDto } from "../../domain/dtos/jwt.dto";
 import { NotificationMapper } from "../mappers/notification.mapper"
 
 export class NotificationDataSourceImpl implements NotificationDataSource {
@@ -26,14 +27,37 @@ export class NotificationDataSourceImpl implements NotificationDataSource {
     }
     return NotificationMapper.toEntity(doc);
   }
+ async updateNotificationsStatusJWT(updateStatusDto: jwtDto): Promise<NotificationEntity[]> {
+    let payload: any;
+    try {
+      payload = jwt.verify(updateStatusDto.token, process.env.JWT_SECRET!);
+    } catch (error) {
+      throw new Error("Invalid or expired token");
+    }
+
+    const userId = payload.id || payload.userId;
+    if (!userId) {
+      throw new Error("Invalid token payload: missing user id");
+    }
+
+    await NotificationModel.updateMany(
+      { userId, isRead: false },
+      { $set: { isRead: true } }
+    );
+
+    const docs = await NotificationModel.find({ userId }).sort({ createdAt: -1 });
+
+    return NotificationMapper.toEntities(docs);
+  }
+
 
   async getAllNotifications(): Promise<NotificationEntity | NotificationEntity[]> {
     const docs = await NotificationModel.find().sort({ createdAt: -1 });
     return NotificationMapper.toEntities(docs);
   }
-
-  async getAllUserNotifications(dto: GetAllUserNotificationDto): Promise<NotificationEntity | NotificationEntity[]> {
+/*
+  async getAllUserNotifications(dto: jwtDto): Promise<NotificationEntity | NotificationEntity[]> {
     const docs = await NotificationModel.find({ userId: dto.userId }).sort({ createdAt: -1 });
     return NotificationMapper.toEntities(docs);
-  }
+  } */
 }

@@ -6,8 +6,9 @@ import { NotificationDataSourceImpl, NotificationRepositoryImpl } from "../../in
 export class NotificationRoutes {
         static get routes(): Router {
             const datasource = new NotificationDataSourceImpl();
-            const vacationRepository = new NotificationRepositoryImpl(datasource);
-            const controller = new NotificationController(vacationRepository);
+            const notificationRepository = new NotificationRepositoryImpl(datasource);
+            const controller = new NotificationController(notificationRepository);
+            
             const router = Router();
             router.post('/create', controller.createNotification.bind(controller));
             router.put('/update/:id', controller.updateNotification.bind(controller));

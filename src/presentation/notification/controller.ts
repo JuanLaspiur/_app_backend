@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { CreateNotificationDto } from "../../domain/dtos";
 import { NotificationRepository, CustomError } from "../../domain";
 import { UpdateNotificationDto } from "../../domain/dtos/notification/updateNotification.dto";
-import { GetAllUserNotificationDto } from "../../domain/dtos/notification/getAllUserNotification";
+import { jwtDto } from "../../domain/dtos/jwt.dto";
 
 export class NotificationController {
     constructor(private readonly notificationRepository: NotificationRepository) { }
@@ -37,6 +37,17 @@ export class NotificationController {
 
     }
 
+    updateNotificationsStatusJWT(req: Request, res: Response) {
+        const token = req.headers.authorization;
+        if (!token) return res.status(400);
+        const [error ,updateNotificationDto] = jwtDto.create({token});
+        if(error) return this.handleError(error, res)
+        this.notificationRepository
+            .updateNotificationsStatusJWT(updateNotificationDto!)
+            .then((notification) => res.status(200).json(notification))
+            .catch((error) => this.handleError(error, res));
+
+    }
     getAllNotifications(req: Request, res: Response) {
          this.notificationRepository
             .getAllNotifications()
@@ -45,7 +56,7 @@ export class NotificationController {
 
     }
 
-
+/*
     getAllUserNotifications(req: Request, res: Response) {
         const { userId } = req.params;
         const [error, getAllUserNotificationDto] = GetAllUserNotificationDto.create({ userId });
@@ -55,5 +66,5 @@ export class NotificationController {
             .then((notification) => res.status(200).json(notification))
             .catch((error) => this.handleError(error, res));
 
-    }
+    } */
 }

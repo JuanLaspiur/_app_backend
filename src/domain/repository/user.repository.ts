@@ -1,0 +1,11 @@
+import { GetUserByIdDto } from "../dtos";
+import { UpdateUserDto } from "../dtos/user/updateUser.dto";
+import { UserEntity } from "../entities/user.entity";
+
+export abstract class UserRepository {
+    abstract getAllUsers(): Promise<UserEntity | UserEntity[]>;
+    abstract getUserById(dto: GetUserByIdDto): Promise<UserEntity | null>;
+    abstract updateUserById(dto: UpdateUserDto): Promise<UserEntity>;
+
+
+}

@@ -1,0 +1,6 @@
+La idea de la misma es que ustedes tengan la informacion de reglas
+que gobiernan la aplicacion
+Es decir ustedes van a tener aqui casos de uso, como implementar los adaptadores, comoimplementar datasources.
+Se recomienda que not enga dependencias externas porque romperia la relacion.
+
+Logíca de negocio.

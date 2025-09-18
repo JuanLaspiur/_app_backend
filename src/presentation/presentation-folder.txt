@@ -1,0 +1,2 @@
+Todo lo que va en la carpeta de presentacion es lo más externo de nuestro.
+Comunidcacion con el Cliente. Se debaria poder modificar sin afectar la lógica de negocio.

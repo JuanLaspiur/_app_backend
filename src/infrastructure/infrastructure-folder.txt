@@ -1,0 +1,3 @@
+Punto intermedio entre domain y presentation.
+
+Crear las implementaciones de sus datasources, de sus repositorios, de mappeds, sirve como punto intermedio.

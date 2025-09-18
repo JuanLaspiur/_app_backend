@@ -14,7 +14,8 @@ export class AuthDataSourceImpl implements AuthDataSource {
 
   constructor(private readonly hashPassword: HashFunction = BcryptAdapter.hash,
     private readonly comparePassword: CompareFunction = BcryptAdapter.compare) { }
-  async login(loginDto: LoginDto): Promise<UserEntity> {
+  
+    async login(loginDto: LoginDto): Promise<UserEntity> {
     const { password, email } = loginDto;
     try {
       const user = await UserModel.findOne({ email });

@@ -7,6 +7,6 @@ export abstract class UserRepository {
     abstract getAllActiveUsers(): Promise<UserEntity | UserEntity[]>;
     abstract getUserById(dto: GetUserByIdDto): Promise<UserEntity>;
     abstract updateUserById(dto: UpdateUserDto): Promise<UserEntity>;
-
+// abstract updateUserByJWT(dto:UpdateUserByJWTDto) : Promise<UserEntity>; 
 
 }

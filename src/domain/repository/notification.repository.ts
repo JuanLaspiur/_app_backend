@@ -5,8 +5,8 @@ import { NotificationEntity } from '../entities/notification.entity';
 
 export abstract class NotificationRepository {
     abstract createNotification(createDto:CreateNotificationDto):Promise<NotificationEntity>
-    abstract updateNotification(id:string, createDto:UpdateNotificationDto):Promise<NotificationEntity>
+    abstract updateNotification(id:string, createDto:UpdateNotificationDto):Promise<NotificationEntity>  // TO-DO token
     abstract getAllNotifications():Promise<NotificationEntity | NotificationEntity[]>
-    abstract getAllUserNotifications(dto:GetAllUserNotificationDto):Promise<NotificationEntity | NotificationEntity[]>
+    abstract getAllUserNotifications(dto:GetAllUserNotificationDto):Promise<NotificationEntity | NotificationEntity[]>// TO-DO token
 
 }

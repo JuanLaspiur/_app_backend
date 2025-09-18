@@ -7,7 +7,7 @@ export abstract class VacationRepository {
     abstract createVacation(createDto:CreateVacationDto):Promise<VacationEntity>
     abstract updateVacation(updateDto:UpdateVacationDto):Promise<VacationEntity | null>
     abstract getAllVacations():Promise<VacationEntity | VacationEntity[]>
-    abstract getAllUserVacations(dto:GetAllUserVacationDto):Promise<VacationEntity | VacationEntity[]>
+    abstract getAllUserVacations(dto:GetAllUserVacationDto):Promise<VacationEntity | VacationEntity[]> // TO-DO token
     
 
 }

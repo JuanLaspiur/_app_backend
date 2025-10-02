@@ -2,7 +2,7 @@ import { BcryptAdapter } from "../../config/bcrypt";
 import { JwtAdapter } from "../../config/jwt";
 import { UserModel } from "../../data/mogodb";
 import { AuthDataSource, CustomError, UserEntity } from "../../domain";
-import { LoginDto, RegisterDto } from "../../domain/dtos";
+import { LoginDto, RegisterDto, UpdatePasswordDto } from "../../domain/dtos";
 import { UserMapper } from "../mappers/user.mapper";
 
 
@@ -14,6 +14,7 @@ export class AuthDataSourceImpl implements AuthDataSource {
 
   constructor(private readonly hashPassword: HashFunction = BcryptAdapter.hash,
     private readonly comparePassword: CompareFunction = BcryptAdapter.compare) { }
+
   
     async login(loginDto: LoginDto): Promise<UserEntity> {
     const { password, email } = loginDto;
@@ -69,5 +70,26 @@ export class AuthDataSourceImpl implements AuthDataSource {
       throw CustomError.internalServer();
     }
   }
+  async updatePassword(updatePasswordDto: UpdatePasswordDto): Promise<UserEntity> {
+    const { id, password, newPassword } = updatePasswordDto;
+
+    try {
+      const user = await UserModel.findById(id);
+      if (!user) throw CustomError.badRequest('User not found');
+
+      const isMatch = this.comparePassword(password, user.password);
+      if (!isMatch) throw CustomError.unauthorized('Incorrect current password');
+
+      user.password = await this.hashPassword(newPassword);
+      await user.save();
+
+      return UserMapper.userEntityFromObject(user);
+
+    } catch (error) {
+      if (error instanceof CustomError) throw error;
+      throw CustomError.internalServer();
+    }
+  }
+
 
 }

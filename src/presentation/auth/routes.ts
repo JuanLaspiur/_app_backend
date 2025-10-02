@@ -13,6 +13,7 @@ export class AuthRoutes {
         const router = Router();
         router.post('/register', controller.register.bind(controller));
         router.post('/login', controller.login.bind(controller));
+        router.put('/updatePassword/:id', controller.updatePassword.bind(controller));
 
 
         return router;

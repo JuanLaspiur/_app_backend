@@ -13,7 +13,7 @@ export class NotificationRoutes {
             router.post('/create', controller.createNotification.bind(controller));
             router.put('/update/:id', controller.updateNotification.bind(controller));
             router.get('/getAll', controller.getAllNotifications.bind(controller));
-            router.get('/getAllByUserId/:userId', controller.getAllUserNotifications.bind(controller));
+           // router.get('/getAllByUserId/:userId', controller.getAllUserNotifications.bind(controller));
             return router;
         }
 }

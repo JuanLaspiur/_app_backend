@@ -1,6 +1,7 @@
 // auth
 export * from './auth/login.dto';
 export * from './auth/register.dto';
+export * from './auth/UpdatePassword.dto'
 
 // user
 export * from './user/getUserById.dto';

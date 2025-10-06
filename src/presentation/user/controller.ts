@@ -66,8 +66,11 @@ async uploadImage(req: Request, res: Response) {
 
 
 async uploadImageToUser(req: Request, res: Response) {
-  try {
+    try {
+     console.log('Entre file '+req.file) 
+     console.log('Incoming content-type:', req.headers['content-type']);
     const file = req.file as Express.Multer.File | undefined;
+    console.log('file ', file)
     if (!file) return res.status(400).json({ message: "No file uploaded" });
 
     const userId = req.params.id;
@@ -91,6 +94,5 @@ async uploadImageToUser(req: Request, res: Response) {
     return res.status(500).json({ message: err.message ?? "Server error" });
   }
 }
-
 
 }

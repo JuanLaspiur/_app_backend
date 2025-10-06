@@ -16,8 +16,9 @@ export class UserRoutes {
         router.get('/userId/:id', controller.getUserById.bind(controller));
         router.put('/userId/:id', controller.updateUserById.bind(controller));
 
-        router.post('/images', upload.single('image'), controller.uploadImage.bind(controller));
 
+        
+        router.post('/images', upload.single('image'), controller.uploadImage.bind(controller));
         router.post('/:id/images', upload.single('image'), controller.uploadImageToUser.bind(controller));
 
         return router;

@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
-import { CreateNotificationDto } from "../../domain/dtos";
+import {jwtDto,  CreateNotificationDto, UpdateNotificationDto } from "../../domain/dtos";
 import { NotificationRepository, CustomError } from "../../domain";
-import { UpdateNotificationDto } from "../../domain/dtos/notification/updateNotification.dto";
-import { jwtDto } from "../../domain/dtos/jwt.dto";
 
 export class NotificationController {
     constructor(private readonly notificationRepository: NotificationRepository) { }

@@ -27,7 +27,7 @@ export class NotificationDataSourceImpl implements NotificationDataSource {
     }
     return NotificationMapper.toEntity(doc);
   }
- async updateNotificationsStatusJWT(updateStatusDto: jwtDto): Promise<NotificationEntity[]> {
+  async updateNotificationsStatusJWT(updateStatusDto: jwtDto): Promise<NotificationEntity[]> {
     let payload: any;
     try {
       payload = jwt.verify(updateStatusDto.token, process.env.JWT_SECRET!);
@@ -55,9 +55,9 @@ export class NotificationDataSourceImpl implements NotificationDataSource {
     const docs = await NotificationModel.find().sort({ createdAt: -1 });
     return NotificationMapper.toEntities(docs);
   }
-/*
-  async getAllUserNotifications(dto: jwtDto): Promise<NotificationEntity | NotificationEntity[]> {
-    const docs = await NotificationModel.find({ userId: dto.userId }).sort({ createdAt: -1 });
-    return NotificationMapper.toEntities(docs);
-  } */
+  /*
+    async getAllUserNotifications(dto: jwtDto): Promise<NotificationEntity | NotificationEntity[]> {
+      const docs = await NotificationModel.find({ userId: dto.userId }).sort({ createdAt: -1 });
+      return NotificationMapper.toEntities(docs);
+    } */
 }

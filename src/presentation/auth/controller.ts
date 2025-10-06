@@ -14,7 +14,6 @@ export class AuthController {
   }
 
 
-
   register(req: Request, res: Response) {
     const [error, registerDto] = RegisterDto.create(req.body);
     if (error) {
@@ -23,8 +22,6 @@ export class AuthController {
     this.authRepository.register(registerDto!)
       .then(user => res.status(200).json(user))
       .catch(error => this.handleError(error, res))
-
-
 
   }
 
@@ -37,6 +34,8 @@ export class AuthController {
       .then(user => res.status(200).json(user))
       .catch(error => this.handleError(error, res));
   }
+
+
 
   updatePassword(req: Request, res: Response) {
     const id = req.params.id;

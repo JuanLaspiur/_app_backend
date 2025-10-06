@@ -14,10 +14,11 @@ export class Server {
   }
 
   private middlewares(): void {
+    this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
-    this.app.use(express.json());
     this.app.use(this.routes);
+
   }
 
   public async start(): Promise<void> {

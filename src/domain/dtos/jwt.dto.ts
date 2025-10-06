@@ -16,6 +16,6 @@ export class jwtDto {
       return ["Invalid token", null];
     }
 
-    return [null, new jwtDto(token)];
+    return [null, new jwtDto(token.slice(7))]
   }
 }

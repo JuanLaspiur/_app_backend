@@ -11,34 +11,25 @@ export class NoteDataSourceImpl implements NoteDataSource {
 
     async createdNoteByJWT(dto: jwtDto, createNoteDto: CreateNoteDto): Promise<NoteEntity> {
         let payload: any;
-
         try {
+            
             if (!dto.token) throw new Error("Token is missing");
             payload = jwt.verify(dto.token, process.env.JWT_SECRET!);
         } catch {
             throw new Error("Invalid or expired token");
         }
-
         const userId = payload.id || payload.userId;
         if (!userId) throw new Error("Invalid token payload: missing user id");
 
         const [error, validDto] = CreateNoteDto.create(createNoteDto);
         if (error || !validDto) throw new Error(error ?? "Invalid note data");
 
-        const newNote: NoteEntity = {
-            id: validDto.id,
-            title: validDto.title,
-            content: validDto.content,
-            userId,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        };
-
-        return newNote;
+        const doc = await NoteModel.create({userId,...validDto});
+        return NoteMapper.toEntity(doc);
     }
 
     async updateNoteByJWT(dto: jwtDto, updateNoteDto: UpdateNoteDto): Promise<NoteEntity> {
-        const doc = await NoteModel.findByIdAndUpdate(updateNoteDto.id, dto, { new: true });
+        const doc = await NoteModel.findByIdAndUpdate(updateNoteDto.id, updateNoteDto,{ new: true });
         let payload: any;
         try {
             if (!dto.token) throw new Error("Token is missing");

@@ -19,6 +19,7 @@ export class NoteController {
             if (errorNote || !createNoteDto) return res.status(400).json({ error: errorNote });
 
             const authHeader = req.headers.authorization;
+
             if (!authHeader) return res.status(401).json({ error: "Authorization header missing" });
 
             const [errorJwt, jwtNotification] = jwtDto.create({ token: authHeader });
@@ -37,6 +38,7 @@ export class NoteController {
              const { id } = req.params;
              const body = req.body;
             const [errorNote, updateNoteDto] = UpdateNoteDto.create({id, ...body });
+
             if (errorNote || !updateNoteDto) return res.status(400).json({ error: errorNote });
 
             const authHeader = req.headers.authorization;

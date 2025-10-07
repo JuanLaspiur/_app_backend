@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import { NoteDataSource, NoteEntity } from "../../domain";
-import { CreateNoteDto, DeleteNoteDto, UpdateNoteDto } from "../../domain/dtos";
-import { jwtDto } from "../../domain/dtos/jwt.dto";
+import { jwtDto, CreateNoteDto, DeleteNoteDto, UpdateNoteDto } from "../../domain/dtos";
 import { NoteMapper } from "../mappers/note.mapper";
 import { NoteModel } from "../../data/mogodb/models/note.model";
 

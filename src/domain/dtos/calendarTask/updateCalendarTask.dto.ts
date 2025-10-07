@@ -7,7 +7,7 @@ export interface UpdateCalendarProps {
   endTime?: string | Date;
 }
 
-export class UpdateCalendarTask {
+export class UpdateCalendarTaskDto {
   id: string;
   title?: string;
   date?: Date;
@@ -22,7 +22,7 @@ export class UpdateCalendarTask {
     if (props.endTime) this.endTime = new Date(props.endTime);
   }
 
-  static create(props: UpdateCalendarProps): [string | null, UpdateCalendarTask | null] {
+  static create(props: UpdateCalendarProps): [string | null, UpdateCalendarTaskDto | null] {
     if (!props.id) return ["id is required", null];
 
     if (props.startTime && props.endTime) {
@@ -31,7 +31,7 @@ export class UpdateCalendarTask {
       if (end <= start) return ["endTime must be after startTime", null];
     }
 
-    const instance = new UpdateCalendarTask(props);
+    const instance = new UpdateCalendarTaskDto(props);
     return [null, instance];
   }
 }

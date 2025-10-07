@@ -6,7 +6,7 @@ export interface CreateCalendarProps {
   endTime: string | Date;
 }
 
-export class CreateCalendarTask {
+export class CreateCalendarTaskDto {
   title: string;
   date: Date;
   startTime?: Date;
@@ -20,7 +20,7 @@ export class CreateCalendarTask {
   }
 
 
-  static create(props: CreateCalendarProps): [string | null, CreateCalendarTask | null] {
+  static create(props: CreateCalendarProps): [string | null, CreateCalendarTaskDto | null] {
 
     if (!props.title) return ["title is required", null];
     if (!props.date) return ["date is required", null];
@@ -33,7 +33,7 @@ export class CreateCalendarTask {
       if (end <= start) return ["endTime must be after startTime", null];
     }
 
-    const instance = new CreateCalendarTask(props);
+    const instance = new CreateCalendarTaskDto(props);
     return [null, instance];
   }
 }

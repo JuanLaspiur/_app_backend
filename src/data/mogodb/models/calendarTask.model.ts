@@ -38,4 +38,4 @@ const CalendarTaskSchema = new Schema(
         },
     });
 
-    export const CalendarTaskModal = mongoose.model('Calendar_Task',CalendarTaskSchema)
+    export const CalendarTaskModel = mongoose.model('Calendar_Task',CalendarTaskSchema)

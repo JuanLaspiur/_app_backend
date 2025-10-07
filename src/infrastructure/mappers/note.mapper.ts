@@ -1,5 +1,4 @@
 import { NoteEntity } from "../../domain";
-import { NoteModel } from "../../data/mogodb/models/note.model";
 
 export class NoteMapper {
   static toEntity(note: any): NoteEntity {

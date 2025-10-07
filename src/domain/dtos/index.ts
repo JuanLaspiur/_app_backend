@@ -19,6 +19,11 @@ export * from './note/createNote.dto';
 export * from './note/updateNote.dto';
 export * from './note/deleteNote.dto';
 
+// calendarTask
+export * from './calendarTask/createCalendarTask.dto';
+export * from './calendarTask/updateCalendarTask.dto';
+export * from './calendarTask/deleteCalendarTask.dto';
+
 
 // JWT DTO 
 export * from './jwt.dto';

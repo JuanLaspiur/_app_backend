@@ -1,7 +1,7 @@
 import { jwtDto, CreateCalendarTaskDto, DeleteCalendarTaskDto, UpdateCalendarTaskDto } from "../dtos";
 import { CalendarTaskEntity } from "../entities/calendarTask.entity";
 
-export abstract class CalendarTaskDataSource {
+export abstract class CalendarTaskRepository {
 
     abstract createCalendarTask(dto:jwtDto, createDto:CreateCalendarTaskDto):Promise<CalendarTaskEntity>;
     abstract updateCalendarTask(dto:jwtDto, updateDto:UpdateCalendarTaskDto):Promise<CalendarTaskEntity>;

@@ -1,4 +1,4 @@
-export class CalendarTask {
+export class CalendarTaskEntity {
     constructor(
         public readonly id : string,
         public readonly title : string,

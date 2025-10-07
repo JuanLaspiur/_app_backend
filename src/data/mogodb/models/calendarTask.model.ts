@@ -1,6 +1,6 @@
-import mongoose, { Schema }  from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const NoteSchema = new Schema (
+const CalendarTaskSchema = new Schema(
     {
         userId: {
             type: String,
@@ -14,10 +14,15 @@ const NoteSchema = new Schema (
             trim: true,
             maxlength: 255,
         },
-         content: {
-            type: String,
-            required: true,
-            trim: true,
+        date:{
+            type:String,
+            require: true    
+        },
+        startTime:{
+            type:String
+        },
+        endTime:{
+            type:String
         }
     },
      {
@@ -31,7 +36,6 @@ const NoteSchema = new Schema (
             }
             ,
         },
-    }
-)
+    });
 
-export const NoteModel = mongoose.model('Note', NoteSchema);
+    export const CalendarTaskModal = mongoose.model('Calendar_Task',CalendarTaskSchema)

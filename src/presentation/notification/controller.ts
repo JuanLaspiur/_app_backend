@@ -49,7 +49,7 @@ export class NotificationController {
     getAllNotifications(req: Request, res: Response) {
          this.notificationRepository
             .getAllNotifications()
-            .then((notification) => res.status(200).json(notification))
+            .then((notifications) => res.status(200).json(notifications))
             .catch((error) => this.handleError(error, res));
 
     }

@@ -1,11 +1,8 @@
-import { Request, response, Response } from "express";
-import fs from "fs";
-import path from "path";
-import sharp from "sharp";
+import { Request, Response } from "express";
 import { UserRepository, CustomError } from "../../domain";
 import { GetUserByIdDto } from "../../domain/dtos";
 import { UpdateUserDto } from "../../domain/dtos/user/updateUser.dto";
-import { processImage } from "../../helpers/processImage";
+import { processImage } from "../../config/helpers/processImage";
 
 export class UserController {
   constructor(private readonly userRepository: UserRepository) { }

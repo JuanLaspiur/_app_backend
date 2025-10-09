@@ -24,9 +24,9 @@ export class CreateCalendarTaskDto {
 
     if (!props.title) return ["title is required", null];
     if (!props.date) return ["date is required", null];
- if (!props.startTime) return ["startTime is required", null];
+    if (!props.startTime) return ["startTime is required", null];
     if (!props.endTime) return ["endTime is required", null];
-  
+
     if (props.startTime && props.endTime) {
       const start = new Date(props.startTime);
       const end = new Date(props.endTime);

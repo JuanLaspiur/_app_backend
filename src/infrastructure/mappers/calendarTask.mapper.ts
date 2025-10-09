@@ -3,7 +3,7 @@ import { CalendarTaskEntity } from "../../domain";
 export class CalendarTaskMapper {
   // Convierte un objeto plano a una entidad
   static toEntity(data: any): CalendarTaskEntity {
-    return new CalendarTaskEntity(
+    return new CalendarTaskEntity( // quiero saber si hay alguna prueba aqui
       data.id || data._id?.toString(),
       data.title,
       data.userId,

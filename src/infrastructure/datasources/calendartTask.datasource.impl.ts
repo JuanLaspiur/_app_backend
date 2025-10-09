@@ -5,7 +5,8 @@ import { CalendarTaskMapper } from "../mappers/calendarTask.mapper";
 import { CalendarTaskModel } from "../../data/mogodb/models/calendarTask.model";
 
 export class CalendarTaskDataSourceImpl implements CalendarTaskDataSource {
-    constructor() { }
+    constructor() {}
+
     async createCalendarTask(dto: jwtDto, createDto: CreateCalendarTaskDto): Promise<CalendarTaskEntity> {
         if (!dto?.token) throw new Error("JWT token is required");
         let payload: any;
@@ -14,16 +15,20 @@ export class CalendarTaskDataSourceImpl implements CalendarTaskDataSource {
         } catch (error) {
             throw new Error("Invalid or expired token");
         }
-        const createdDoc = await CalendarTaskModel.create({
-            userId: payload,
-            title: createDto.title,
-            date: createDto.date,
-            startTime: createDto.startTime,
-            endTime: createDto.endTime,
-        });
-
-        return CalendarTaskMapper.toEntity(createdDoc.toObject());;
+        try {
+            const createdDoc = await CalendarTaskModel.create({
+                userId: payload.id,
+                title: createDto.title,
+                date: createDto.date,
+                startTime: createDto.startTime,
+                endTime: createDto.endTime,
+            });
+            return CalendarTaskMapper.toEntity(createdDoc);
+        } catch (error) {
+            throw new Error("Invalid or expired token ");
+        }
     }
+
     async updateCalendarTask(dto: jwtDto, updateDto: UpdateCalendarTaskDto): Promise<CalendarTaskEntity> {
         if (!updateDto.id) throw new Error("Task ID is required for update");
         if (!dto?.token) throw new Error("JWT token is required");
@@ -81,7 +86,7 @@ export class CalendarTaskDataSourceImpl implements CalendarTaskDataSource {
             throw new Error("Invalid or expired token");
         }
 
-        const tasks = await CalendarTaskModel.find({ userId: payload }).sort({ date: 1 });
+        const tasks = await CalendarTaskModel.find({ userId: payload.id }).sort({ date: 1 });
 
         return CalendarTaskMapper.toEntities(tasks.map(task => task.toObject()));
     }

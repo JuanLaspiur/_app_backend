@@ -52,6 +52,7 @@ export class CalendarTaskController {
         const token = req.headers.authorization;
         const { id } = req.params;
         if (!token) return res.status(400);
+     
 
         const [errorJwt, dtoJwt] = jwtDto.create({ token });
         if (errorJwt) return this.handleError(errorJwt, res, 1 )

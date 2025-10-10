@@ -68,7 +68,7 @@ export class CalendarTaskDataSourceImpl implements CalendarTaskDataSource {
 
         const deleted = await CalendarTaskModel.findOneAndDelete({
             _id: deleteDto.id,
-            userId: payload,
+            userId: payload.id,
         });
 
         if (!deleted) throw new Error("Task not found or not authorized");

@@ -1,6 +1,6 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from 'mongoose';
 
-const CalendarTaskSchema = new Schema(
+const PushNotificationSchema = new Schema(
     {
         userId: {
             type: String,
@@ -8,27 +8,20 @@ const CalendarTaskSchema = new Schema(
             trim: true,
             index: true,
         },
-        title: {
+        token: {
             type: String,
             required: true,
             trim: true,
             maxlength: 255,
         },
-        date:{
-            type:String,
-            require: true    
+          platform: {
+            type: String,
+            enum: ["android", "ios", "web"],
+            required: true,
+            default: "android",
         },
-        startTime:{
-            type:String
-        },
-        endTime:{
-            type:String
-        }, 
-        notification:{
-            type: Boolean
-        }
     },
-     {
+    {
         timestamps: true,
         toJSON: {
             virtuals: true,
@@ -39,6 +32,7 @@ const CalendarTaskSchema = new Schema(
             }
             ,
         },
-    });
+    }
+);
 
-    export const CalendarTaskModel = mongoose.model('Calendar_Task',CalendarTaskSchema)
+export const PushNotificationModel = mongoose.model('PushNotification', PushNotificationSchema);

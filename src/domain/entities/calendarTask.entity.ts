@@ -8,5 +8,6 @@ export class CalendarTaskEntity {
         public readonly endTime : string,
         public readonly createdAt: Date = new Date(),
         public readonly updatedAt: Date = new Date(),
+        public readonly notification: boolean,
     ){}
 }

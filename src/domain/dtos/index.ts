@@ -14,6 +14,11 @@ export * from './vacation/updateVacation.dto';
 export * from './notification/createNotification.dto';
 export * from './notification/updateNotification.dto';
 
+// pushnotifications
+export * from './pushnotification/saveToken.dto';
+export * from './pushnotification/sendNotification.dto';
+
+
 // note
 export * from './note/createNote.dto';
 export * from './note/updateNote.dto';

@@ -5,6 +5,7 @@ export interface UpdateCalendarProps {
   date?: string | Date;
   startTime?: string | Date;
   endTime?: string | Date;
+  notification?: boolean
 }
 
 export class UpdateCalendarTaskDto {
@@ -13,6 +14,7 @@ export class UpdateCalendarTaskDto {
   date?: Date;
   startTime?: Date;
   endTime?: Date;
+  notification?: boolean
 
   private constructor(props: UpdateCalendarProps) {
     this.id = props.id;
@@ -20,6 +22,7 @@ export class UpdateCalendarTaskDto {
     if (props.date) this.date = new Date(props.date);
     if (props.startTime) this.startTime = new Date(props.startTime);
     if (props.endTime) this.endTime = new Date(props.endTime);
+    if (props.notification) this.notification = props.notification;
   }
 
   static create(props: UpdateCalendarProps): [string | null, UpdateCalendarTaskDto | null] {

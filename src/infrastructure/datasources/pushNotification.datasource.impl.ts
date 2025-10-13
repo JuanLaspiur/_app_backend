@@ -1,70 +1,39 @@
-import jwt from "jsonwebtoken";
 import { PushNotificationModel } from "../../data/mogodb";
 import { PushNotificationDatasource, PushNotificationEntity } from "../../domain";
 import { jwtDto, SaveTokenDto, SendNotificationDto } from "../../domain/dtos";
 import { PushNotificationMapper } from "../index";
 
 export class PushNotificationDataSourceImpl implements PushNotificationDatasource {
+  constructor(private readonly verifyToken: (dto: jwtDto) => string) {}
 
-    async saveToken(dto: jwtDto, saveTokenDto: SaveTokenDto): Promise<PushNotificationEntity> {
-        let payload: any;
-
-        try {
-            payload = jwt.verify(dto.token!, process.env.JWT_SECRET!);
-        } catch {
-            throw new Error("Invalid or expired token");
-        }
-
-        const userId = payload.id || payload.userId;
-        if (!userId) {
-            throw new Error("Invalid token payload: missing user id");
-        }
-
-        const { token, platform } = saveTokenDto;
-
-        const existing = await PushNotificationModel.findOne({ userId, token });
-
-        if (existing) {
-            return PushNotificationMapper.toEntity(existing);
-        }
-
-        const created = await PushNotificationModel.create({
-            userId,
-            token,
-            platform,
-        });
-
-        return PushNotificationMapper.toEntity(created);
+  async saveToken(dto: jwtDto, saveTokenDto: SaveTokenDto): Promise<PushNotificationEntity> {
+    const userId = this.verifyToken(dto);
+    const { token, platform } = saveTokenDto;
+    const existing = await PushNotificationModel.findOne({ userId, token });
+    if (existing) {
+      return PushNotificationMapper.toEntity(existing);
     }
-    async getTokensByUser(dto: jwtDto): Promise<PushNotificationEntity> {
-        let payload: any;
+    const created = await PushNotificationModel.create({
+      userId,
+      token,
+      platform,
+    });
 
-        try {
-            payload = jwt.verify(dto.token!, process.env.JWT_SECRET!);
-        } catch {
-            throw new Error("Invalid or expired token");
-        }
+    return PushNotificationMapper.toEntity(created);
+  }
 
-        const userId = payload.id || payload.userId;
-        if (!userId) throw new Error("Invalid token payload: missing user id");
+  async getTokensByUser(dto: jwtDto): Promise<PushNotificationEntity> {
+    const userId = this.verifyToken(dto);
+    const tokenDoc = await PushNotificationModel.findOne({ userId })
+      .sort({ updatedAt: -1 });
 
-        const tokenDoc = await PushNotificationModel.findOne({ userId })
-            .sort({ updatedAt: -1 });
-        if (!tokenDoc) {
-            throw new Error("No push token found for this user");
-        }
-
-        return PushNotificationMapper.toEntity(tokenDoc);
-
+    if (!tokenDoc) {
+      throw new Error("No push token found for this user");
     }
+    return PushNotificationMapper.toEntity(tokenDoc);
+  }
 
-
-
-    sendNotification(sendNotificationDto: SendNotificationDto): Promise<void> {
-        throw new Error("Method not implemented.");
-    }
-
-
-
+  async sendNotification(sendNotificationDto: SendNotificationDto): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
 }
-

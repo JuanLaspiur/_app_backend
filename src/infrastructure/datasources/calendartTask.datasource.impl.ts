@@ -1,5 +1,5 @@
 
-import { CalendarTaskDataSource, CalendarTaskEntity, CustomError } from "../../domain";
+import { CalendarTaskDataSource, CalendarTaskEntity } from "../../domain";
 import {
     CreateCalendarTaskDto,
     UpdateCalendarTaskDto,

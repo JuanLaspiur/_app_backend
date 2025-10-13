@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { NoteController } from './controller';
 import { NoteDataSourceImpl, NoteRepositoryImpl } from "../../infrastructure";
+import { verifyToken } from "../../config/helpers";
 
 export class NoteRoutes{
 
     static get routes (): Router{
-        const datasource = new NoteDataSourceImpl();
+        const datasource = new NoteDataSourceImpl(verifyToken);
         const noteRepository = new NoteRepositoryImpl(datasource);
         const controller = new NoteController(noteRepository);
 

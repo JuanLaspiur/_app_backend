@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { NotificationController } from "./controller";
 import { NotificationDataSourceImpl, NotificationRepositoryImpl } from "../../infrastructure";
-
+import { verifyToken } from "../../config/helpers";
 
 export class NotificationRoutes {
         static get routes(): Router {
-            const datasource = new NotificationDataSourceImpl();
+            const datasource = new NotificationDataSourceImpl(verifyToken);
             const notificationRepository = new NotificationRepositoryImpl(datasource);
             const controller = new NotificationController(notificationRepository);
             

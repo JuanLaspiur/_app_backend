@@ -1,14 +1,14 @@
 import { Router } from "express";
 import { CalendarTaskController } from './controller';
 import { CalendarTaskDataSourceImpl, CalendarTaskRepositoryImpl } from "../../infrastructure";
-import { verifyToken, handleError } from "../../config/helpers";
+import { verifyToken, handleError, handleErrorController } from "../../config/helpers";
 
 export class  CalendarTaskRoutes{
 
     static get routes (): Router{
         const datasource = new CalendarTaskDataSourceImpl(verifyToken, handleError);
         const taskCalendarRepository = new CalendarTaskRepositoryImpl(datasource);
-        const controller = new CalendarTaskController(taskCalendarRepository);
+        const controller = new CalendarTaskController(taskCalendarRepository, handleErrorController);
 
         const router = Router();
         router.post('/create', controller.createCalendarTask.bind(controller));

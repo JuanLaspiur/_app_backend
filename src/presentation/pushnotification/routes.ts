@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { PushNotificationController } from "./controller";
 import { PushNotificationDataSourceImpl, PushNotificationRepositoryImpl } from "../../infrastructure";
-import { verifyToken } from "../../config/helpers";
+import { verifyToken, handleError } from "../../config/helpers";
 
 export class PushNotificationRoutes {
         static get routes(): Router {
-            const datasource = new PushNotificationDataSourceImpl(verifyToken);
+            const datasource = new PushNotificationDataSourceImpl(verifyToken, handleError);
             const pushNotificationRepository = new PushNotificationRepositoryImpl(datasource);
             const controller = new PushNotificationController(pushNotificationRepository);
             

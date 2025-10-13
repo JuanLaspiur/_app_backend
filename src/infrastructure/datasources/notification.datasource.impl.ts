@@ -5,49 +5,71 @@ import { NotificationMapper } from "../mappers/notification.mapper";
 
 export class NotificationDataSourceImpl implements NotificationDataSource {
 
-  constructor(private readonly verifyToken: (dto: jwtDto) => string) {}
+  constructor(
+    private readonly verifyToken: (dto: jwtDto) => string,
+    private readonly handleError: (error: unknown) => never
+  ) {}
 
   async createNotification(dto: CreateNotificationDto): Promise<NotificationEntity> {
-    const doc = await NotificationModel.create({
-      userId: dto.userId,
-      title: dto.title,
-      message: dto.message,
-      type: dto.type,
-      isRead: false,
-    });
+    try {
+      const doc = await NotificationModel.create({
+        userId: dto.userId,
+        title: dto.title,
+        message: dto.message,
+        type: dto.type,
+        isRead: false,
+      });
 
-    return NotificationMapper.toEntity(doc);
+      return NotificationMapper.toEntity(doc);
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   async updateNotification(id: string, dto: UpdateNotificationDto): Promise<NotificationEntity> {
-    const doc = await NotificationModel.findByIdAndUpdate(id, dto, { new: true });
-    if (!doc) {
-      throw new Error(`Notification with id ${id} not found`);
+    try {
+      const doc = await NotificationModel.findByIdAndUpdate(id, dto, { new: true });
+      if (!doc) throw new Error(`Notification with id ${id} not found`);
+
+      return NotificationMapper.toEntity(doc);
+    } catch (error) {
+      this.handleError(error);
     }
-    return NotificationMapper.toEntity(doc);
   }
 
   async updateNotificationsStatusJWT(updateStatusDto: jwtDto): Promise<NotificationEntity[]> {
-    const userId = this.verifyToken(updateStatusDto);
+    try {
+      const userId = this.verifyToken(updateStatusDto);
 
-    await NotificationModel.updateMany(
-      { userId, isRead: false },
-      { $set: { isRead: true } }
-    );
+      await NotificationModel.updateMany(
+        { userId, isRead: false },
+        { $set: { isRead: true } }
+      );
 
-    const docs = await NotificationModel.find({ userId }).sort({ createdAt: -1 }).lean();
-    return NotificationMapper.toEntities(docs);
+      const docs = await NotificationModel.find({ userId }).sort({ createdAt: -1 }).lean();
+      return NotificationMapper.toEntities(docs);
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   async getAllNotifications(): Promise<NotificationEntity[]> {
-    const docs = await NotificationModel.find().sort({ createdAt: -1 }).lean();
-    return NotificationMapper.toEntities(docs);
+    try {
+      const docs = await NotificationModel.find().sort({ createdAt: -1 }).lean();
+      return NotificationMapper.toEntities(docs);
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   async getAllUserNotifications(dto: jwtDto): Promise<NotificationEntity[]> {
-    const userId = this.verifyToken(dto);
+    try {
+      const userId = this.verifyToken(dto);
 
-    const docs = await NotificationModel.find({ userId }).sort({ createdAt: -1 }).lean();
-    return NotificationMapper.toEntities(docs);
+      const docs = await NotificationModel.find({ userId }).sort({ createdAt: -1 }).lean();
+      return NotificationMapper.toEntities(docs);
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 }

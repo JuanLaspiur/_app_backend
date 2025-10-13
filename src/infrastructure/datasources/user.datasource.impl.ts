@@ -6,44 +6,51 @@ import { UpdateUserDto } from "../../domain/dtos/user/updateUser.dto";
 import { UserMapper } from "../mappers/user.mapper";
 
 export class UserDataSourceImpl implements UserDataSource {
+  constructor(
+    private readonly handleError: (error: unknown) => never
+  ) {}
 
-
-
-    async getAllUsers(): Promise<UserEntity[]> {
-        const users = await UserModel.find();
-        return UserMapper.toEntities(users);
+  async getAllUsers(): Promise<UserEntity[]> {
+    try {
+      const users = await UserModel.find();
+      return UserMapper.toEntities(users);
+    } catch (error) {
+      this.handleError(error);
     }
-    async getAllActiveUsers(): Promise<UserEntity | UserEntity[]> {
-        const users = await UserModel.find({isActive:true});
-        return UserMapper.toEntities(users);
+  }
+
+  async getAllActiveUsers(): Promise<UserEntity[]> {
+    try {
+      const users = await UserModel.find({ isActive: true });
+      return UserMapper.toEntities(users);
+    } catch (error) {
+      this.handleError(error);
     }
+  }
 
-    async getUserById(dto: GetUserByIdDto): Promise<UserEntity> {
-        const user = await UserModel.findById(dto.userId);
-        if (!user) {
-            throw CustomError.notFound("User not found");
-        }
-        return UserMapper.userEntityFromObject(user);
+  async getUserById(dto: GetUserByIdDto): Promise<UserEntity> {
+    try {
+      const user = await UserModel.findById(dto.userId);
+      if (!user) throw CustomError.notFound("User not found");
+      return UserMapper.userEntityFromObject(user);
+    } catch (error) {
+      this.handleError(error);
     }
+  }
 
+  async updateUserById(dto: UpdateUserDto): Promise<UserEntity> {
+    try {
+      const { id, ...updateData } = dto;
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        id,
+        { $set: updateData },
+        { new: true }
+      );
 
-    async updateUserById(dto: UpdateUserDto): Promise<UserEntity> {
-        try {
-            const { id, ...updateData } = dto;
-            const updatedUser = await UserModel.findByIdAndUpdate(
-                id,
-                { $set: updateData },
-                { new: true }
-            );
-
-            if (!updatedUser) {
-                throw CustomError.notFound("User not found");
-            }
-
-            return UserMapper.userEntityFromObject(updatedUser);
-        } catch (error) {
-            throw CustomError.internalServer(`${error}`);
-        }
+      if (!updatedUser) throw CustomError.notFound("User not found");
+      return UserMapper.userEntityFromObject(updatedUser);
+    } catch (error) {
+      this.handleError(error);
     }
-
+  }
 }

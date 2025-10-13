@@ -2,11 +2,12 @@ import { Router } from "express";
 import { UserController } from "./controller";
 import { UserDataSourceImpl, UserRepositoryImpl } from "../../infrastructure";
 import { upload } from "../../infrastructure/upload/multer.config";
+import { handleError } from "../../config/helpers";
 
 export class UserRoutes {
     static get routes(): Router {
 
-        const datasource = new UserDataSourceImpl();
+        const datasource = new UserDataSourceImpl(handleError);
         const authRepositoy = new UserRepositoryImpl(datasource);
         const controller = new UserController(authRepositoy);
 

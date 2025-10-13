@@ -71,7 +71,7 @@ async uploadImageToUser(req: Request, res: Response) {
     if (!file) return res.status(400).json({ message: "No file uploaded" });
 
     const userId = req.params.id;
-    const fileInfo = await processImage(file);
+    const fileInfo = await processImage(file, userId);
 
     const [error, dto] = UpdateUserDto.create({
       id: userId,

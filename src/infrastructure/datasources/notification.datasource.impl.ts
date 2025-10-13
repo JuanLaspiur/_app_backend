@@ -1,10 +1,8 @@
 import jwt from "jsonwebtoken";
 import { NotificationModel } from "../../data/mogodb";
 import { NotificationDataSource, NotificationEntity } from "../../domain";
-import { CreateNotificationDto } from "../../domain/dtos/notification/createNotification.dto";
-import { UpdateNotificationDto } from "../../domain/dtos/notification/updateNotification.dto";
-import { jwtDto } from "../../domain/dtos/jwt.dto";
-import { NotificationMapper } from "../mappers/notification.mapper"
+import { jwtDto, CreateNotificationDto, UpdateNotificationDto } from "../../domain/dtos";
+import { NotificationMapper } from "../mappers/notification.mapper";
 
 export class NotificationDataSourceImpl implements NotificationDataSource {
 
@@ -30,7 +28,7 @@ export class NotificationDataSourceImpl implements NotificationDataSource {
   async updateNotificationsStatusJWT(updateStatusDto: jwtDto): Promise<NotificationEntity[]> {
     let payload: any;
     try {
-      payload = jwt.verify(updateStatusDto.token, process.env.JWT_SECRET!);
+      payload = jwt.verify(updateStatusDto.token!, process.env.JWT_SECRET!);
     } catch (error) {
       throw new Error("Invalid or expired token");
     }

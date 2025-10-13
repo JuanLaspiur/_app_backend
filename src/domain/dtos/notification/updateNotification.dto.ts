@@ -5,7 +5,7 @@ export interface UpdateNotificationDtoProps {
   title?: string;
   message?: string;
   type?: NotificationType; 
-  isRead?:boolean;
+  isRead?: boolean;
 }
 
 export class UpdateNotificationDto {
@@ -17,14 +17,22 @@ export class UpdateNotificationDto {
     public readonly isRead?: boolean,
   ) {}
 
-  static create(props: UpdateNotificationDtoProps): UpdateNotificationDto {
-    return new UpdateNotificationDto(
-      props.userId,
-      props.title,
-      props.message,
-      props.type,
-      props.isRead
-    );
+  static create(props: UpdateNotificationDtoProps): [string | null, UpdateNotificationDto | null] {
+    if (!props) return ['Missing properties', null];
+
+    const { userId, title, message, type, isRead } = props;
+
+    if (
+      userId === undefined &&
+      title === undefined &&
+      message === undefined &&
+      type === undefined &&
+      isRead === undefined
+    ) {
+      return ['At least one field must be provided to update the notification', null];
+    }
+
+    const dto = new UpdateNotificationDto(userId, title, message, type, isRead);
+    return [null, dto];
   }
 }
-

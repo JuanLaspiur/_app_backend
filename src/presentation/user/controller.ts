@@ -5,91 +5,85 @@ import { UpdateUserDto } from "../../domain/dtos/user/updateUser.dto";
 import { processImage } from "../../config/helpers/processImage";
 
 export class UserController {
-  constructor(private readonly userRepository: UserRepository) { }
-
-  private handleError = (error: unknown, res: Response) => {
-    if (error instanceof CustomError) {
-      return res.status(error.statusCode).json({ error: error.message });
-    }
-    console.error(error);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly handleError: (error: unknown, res: Response, num?: number) => void
+  ) {}
 
   getAllUsers(req: Request, res: Response) {
-    this.userRepository.getAllUsers()
-      .then(user => res.status(200).json(user))
-      .catch(error => this.handleError(error, res))
+    this.userRepository
+      .getAllUsers()
+      .then((users) => res.status(200).json(users))
+      .catch((error) => this.handleError(error, res, 1));
   }
 
   getAllActiveUsers(req: Request, res: Response) {
-    this.userRepository.getAllActiveUsers()
-      .then(user => res.status(200).json(user))
-      .catch(error => this.handleError(error, res))
+    this.userRepository
+      .getAllActiveUsers()
+      .then((users) => res.status(200).json(users))
+      .catch((error) => this.handleError(error, res, 2));
   }
 
   getUserById(req: Request, res: Response) {
     const id = req.params.id;
     const [error, dto] = GetUserByIdDto.create({ userId: id });
-    if (error) return res.status(400).json({ error });
-    this.userRepository.getUserById(dto!)
-      .then(user => res.status(200).json(user))
-      .catch(error => this.handleError(error, res))
+    if (error) return this.handleError(CustomError.badRequest(error), res, 3);
+
+    this.userRepository
+      .getUserById(dto!)
+      .then((user) => res.status(200).json(user))
+      .catch((error) => this.handleError(error, res, 4));
   }
 
   updateUserById(req: Request, res: Response) {
     const id = req.params.id;
-    const data = req.body
+    const data = req.body;
     const [error, dto] = UpdateUserDto.create({ id, ...data });
-    if (error) return res.status(400).json({ error });
-    this.userRepository.updateUserById(dto!)
-      .then(user => res.status(200).json(user))
-      .catch(error => this.handleError(error, res))
+    if (error) return this.handleError(CustomError.badRequest(error), res, 5);
+
+    this.userRepository
+      .updateUserById(dto!)
+      .then((user) => res.status(200).json(user))
+      .catch((error) => this.handleError(error, res, 6));
   }
 
-
-async uploadImage(req: Request, res: Response) {
-  try {
+  uploadImage(req: Request, res: Response) {
     const file = req.file as Express.Multer.File | undefined;
-    if (!file) return res.status(400).json({ message: "No file uploaded" });
+    if (!file)
+      return this.handleError(CustomError.badRequest("No file uploaded"), res, 7);
 
-    const fileInfo = await processImage(file);
-
-    return res.status(201).json({ message: "File uploaded", file: fileInfo });
-  } catch (err: any) {
-    console.error("Upload error:", err);
-    return res.status(500).json({ message: err.message ?? "Server error" });
+    processImage(file)
+      .then((fileInfo) =>
+        res.status(201).json({ message: "File uploaded", file: fileInfo })
+      )
+      .catch((error) => this.handleError(error, res, 8));
   }
-}
 
-
-async uploadImageToUser(req: Request, res: Response) {
-    try {
-     console.log('Entre file '+req.file) 
-     console.log('Incoming content-type:', req.headers['content-type']);
+  uploadImageToUser(req: Request, res: Response) {
     const file = req.file as Express.Multer.File | undefined;
-    console.log('file ', file)
-    if (!file) return res.status(400).json({ message: "No file uploaded" });
+    if (!file)
+      return this.handleError(CustomError.badRequest("No file uploaded"), res, 9);
 
     const userId = req.params.id;
-    const fileInfo = await processImage(file, userId);
 
-    const [error, dto] = UpdateUserDto.create({
-      id: userId,
-      avatarUrl: fileInfo.url,
-    });
-    if (error) return res.status(400).json({ error });
+    processImage(file, userId)
+      .then((fileInfo) => {
+        const [error, dto] = UpdateUserDto.create({
+          id: userId,
+          avatarUrl: fileInfo.url,
+        });
+        if (error) throw CustomError.badRequest(error);
 
-    const updatedUser = await this.userRepository.updateUserById(dto!);
-
-    return res.status(200).json({
-      message: "File uploaded, converted to webp and user updated",
-      file: fileInfo,
-      user: updatedUser,
-    });
-  } catch (err: any) {
-    console.error("UploadToUser error:", err);
-    return res.status(500).json({ message: err.message ?? "Server error" });
+        return this.userRepository
+          .updateUserById(dto!)
+          .then((updatedUser) =>
+            res.status(200).json({
+              message: "File uploaded, converted to webp and user updated",
+              file: fileInfo,
+              user: updatedUser,
+            })
+          );
+      })
+      .catch((error) => this.handleError(error, res, 10));
   }
-}
-
 }

@@ -4,91 +4,83 @@ import { CustomError, NoteRepository } from "../../domain";
 
 export class NoteController {
 
-    constructor(private readonly noteRepository: NoteRepository) { }
+    constructor(
+        private readonly noteRepository: NoteRepository,
+        private readonly handleError: (error: unknown, res: Response, num?: number) => void
+    ) { }
 
-    private handleError = (error: unknown, res: Response) => {
-        if (error instanceof CustomError) {
-            return res.status(error.statusCode).json({ error: error.message });
-        }
-        console.error(error);
-        return res.status(500).json({ error: 'Internal server error' });
-    }
     async createNote(req: Request, res: Response) {
         try {
             const [errorNote, createNoteDto] = CreateNoteDto.create(req.body);
-            if (errorNote || !createNoteDto) return res.status(400).json({ error: errorNote });
+            if (errorNote || !createNoteDto) return this.handleError(errorNote, res, 1);
 
             const authHeader = req.headers.authorization;
-
-            if (!authHeader) return res.status(401).json({ error: "Authorization header missing" });
+            if (!authHeader) return this.handleError(new CustomError(401, 'unauthorized'), res, 2);
 
             const [errorJwt, jwtNotification] = jwtDto.create({ token: authHeader });
-            if (errorJwt || !jwtNotification) return res.status(401).json({ error: errorJwt });
+            if (errorJwt || !jwtNotification) return this.handleError(errorJwt, res, 3);
 
             const note = await this.noteRepository.createdNoteByJWT(jwtNotification, createNoteDto);
             return res.status(201).json(note);
 
         } catch (error) {
-            this.handleError(error, res);
+            this.handleError(error, res, 4);
         }
     }
 
     async updateNote(req: Request, res: Response) {
         try {
-             const { id } = req.params;
-             const body = req.body;
-            const [errorNote, updateNoteDto] = UpdateNoteDto.create({id, ...body });
-
-            if (errorNote || !updateNoteDto) return res.status(400).json({ error: errorNote });
+            const { id } = req.params;
+            const [errorNote, updateNoteDto] = UpdateNoteDto.create({ id, ...req.body });
+            if (errorNote || !updateNoteDto) return this.handleError(errorNote, res, 1);
 
             const authHeader = req.headers.authorization;
-            if (!authHeader) return res.status(401).json({ error: "Authorization header missing" });
+            if (!authHeader) return this.handleError(new CustomError(401, 'Authorization header missing'), res, 2);
 
             const [errorJwt, jwtNotification] = jwtDto.create({ token: authHeader });
-            if (errorJwt || !jwtNotification) return res.status(401).json({ error: errorJwt });
+            if (errorJwt || !jwtNotification) return this.handleError(errorJwt, res, 3);
 
             const note = await this.noteRepository.updateNoteByJWT(jwtNotification, updateNoteDto);
-            return res.status(201).json(note);
+            return res.status(200).json(note);
 
         } catch (error) {
-            this.handleError(error, res);
+            this.handleError(error, res, 4);
         }
     }
-
 
     async getAllNoteByJWT(req: Request, res: Response) {
         try {
             const authHeader = req.headers.authorization;
-            if (!authHeader) return res.status(401).json({ error: "Authorization header missing" });
+            if (!authHeader) return this.handleError(new CustomError(401, 'Authorization header missing'), res, 1);
 
             const [errorJwt, jwtNotification] = jwtDto.create({ token: authHeader });
-            if (errorJwt || !jwtNotification) return res.status(401).json({ error: errorJwt });
+            if (errorJwt || !jwtNotification) return this.handleError(errorJwt, res, 2);
 
-            const note = await this.noteRepository.getAllNoteByJWT(jwtNotification);
-            return res.status(201).json(note);
+            const notes = await this.noteRepository.getAllNoteByJWT(jwtNotification);
+            return res.status(200).json(notes);
 
         } catch (error) {
-            this.handleError(error, res);
+            this.handleError(error, res, 3);
         }
     }
 
     async deleteNoteByJWT(req: Request, res: Response) {
         try {
-                const { id } = req.params;
-               const [errorNote, deleteNoteDto] = DeleteNoteDto.create({id});
-            if (errorNote || !deleteNoteDto) return res.status(400).json({ error: errorNote });
+            const { id } = req.params;
+            const [errorNote, deleteNoteDto] = DeleteNoteDto.create({ id });
+            if (errorNote || !deleteNoteDto) return this.handleError(errorNote, res, 1);
 
             const authHeader = req.headers.authorization;
-            if (!authHeader) return res.status(401).json({ error: "Authorization header missing" });
+            if (!authHeader) return this.handleError(new CustomError(401, 'Authorization header missing'), res, 2);
 
             const [errorJwt, jwtNotification] = jwtDto.create({ token: authHeader });
-            if (errorJwt || !jwtNotification) return res.status(401).json({ error: errorJwt });
+            if (errorJwt || !jwtNotification) return this.handleError(errorJwt, res, 3);
 
             const note = await this.noteRepository.deleteNoteByJWT(jwtNotification, deleteNoteDto);
-            return res.status(201).json(note);
+            return res.status(200).json(note);
 
         } catch (error) {
-            this.handleError(error, res);
+            this.handleError(error, res, 4);
         }
     }
 

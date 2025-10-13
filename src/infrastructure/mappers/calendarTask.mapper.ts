@@ -1,9 +1,9 @@
 import { CalendarTaskEntity } from "../../domain";
 
 export class CalendarTaskMapper {
-  // Convierte un objeto plano a una entidad
+
   static toEntity(data: any): CalendarTaskEntity {
-    return new CalendarTaskEntity( // quiero saber si hay alguna prueba aqui
+    return new CalendarTaskEntity(
       data.id || data._id?.toString(),
       data.title,
       data.userId,
@@ -12,6 +12,8 @@ export class CalendarTaskMapper {
       data.endTime?.toISOString?.() || data.endTime,
       data.createdAt ? new Date(data.createdAt) : new Date(),
       data.updatedAt ? new Date(data.updatedAt) : new Date(),
+      data.notification ? data.notification : false
+
     );
   }
 

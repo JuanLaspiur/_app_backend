@@ -5,6 +5,7 @@ export * from './entities/notification.entity';
 export * from './entities/note.entity';
 export * from './entities/calendarTask.entity';
 export * from './entities/pushNotification.entity';
+export * from './entities/workSchedule.entity';
 
 
 // error
@@ -19,6 +20,7 @@ export * from './datasources/user.datasource';
 export * from './datasources/note.datasource';
 export * from './datasources/calendarTask.datasource';
 export * from './datasources/pushNotification.datasource';
+export * from './datasources/workSchedule.datasource';
 
 
 // repository
@@ -29,3 +31,4 @@ export * from './repository/user.repository';
 export * from './repository/note.repository';
 export * from './repository/calendarTask.repository';
 export * from './repository/pushnotification.repository';
+export * from './repository/workSchedule.repository';

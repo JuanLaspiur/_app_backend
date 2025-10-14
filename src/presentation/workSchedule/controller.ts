@@ -9,7 +9,6 @@ export class WorkScheduleController {
     ) { }
 
     async createWorkSchedule(req: Request, res: Response) {
-
         try {
             const token = req.headers.authorization;
             if (!token)
@@ -57,6 +56,33 @@ export class WorkScheduleController {
             return res.status(200).json(schedules);
         } catch (error) {
             this.handleError(error, res);
+        }
+    }
+
+     async deleteWorkSchedule(req: Request, res: Response) {
+        try {
+            const id = req.params.id;
+            if (!id) throw CustomError.badRequest("Missing schedule ID");
+
+            await this.workScheduleRepository.deleteWorkShedule(id);
+            return res.status(204).send();
+        } catch (error) {
+            this.handleError(error, res, 4);
+        }
+    }
+
+    async deleteAllUserWorkSchedules(req: Request, res: Response) {
+        try {
+            const token = req.headers.authorization;
+            if (!token) throw CustomError.badRequest("Missing token");
+
+            const [error, dto] = jwtDto.create({ token });
+            if (error || !dto) throw CustomError.unauthorized(error ?? "Invalid token");
+
+            await this.workScheduleRepository.deleteAllUserWorkShedules(dto);
+            return res.status(204).send();
+        } catch (error) {
+            this.handleError(error, res, 5);
         }
     }
 }

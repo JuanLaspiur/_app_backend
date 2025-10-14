@@ -4,6 +4,7 @@ import { jwtDto, CreateWorkScheduleDto, UpdateWorkScheduleDto } from "../../doma
 export class WorkScheduleRepositoryImpl implements WorkScheduleRepository {
 
     constructor(private readonly workScheduleDataSource: WorkScheduleDataSource) { }
+  
 
     createWorkShedule(dto: jwtDto, createDto: CreateWorkScheduleDto): Promise<WorkScheduleEntity> {
         return this.workScheduleDataSource.createWorkShedule(dto, createDto);
@@ -11,6 +12,14 @@ export class WorkScheduleRepositoryImpl implements WorkScheduleRepository {
     updateWorkShedule(updateDto: UpdateWorkScheduleDto): Promise<WorkScheduleEntity> {
         return this.workScheduleDataSource.updateWorkShedule(updateDto);
     }
+    
+      deleteWorkShedule(workScheduleId: string): Promise<void> {
+      return this.workScheduleDataSource.deleteWorkShedule(workScheduleId);
+    }
+      deleteAllUserWorkShedules(dto: jwtDto): Promise<void> {
+      return this.workScheduleDataSource.deleteAllUserWorkShedules(dto);
+    }
+  
     getAllUserWorkShedules(dto: jwtDto): Promise<WorkScheduleEntity[]> {
         return this.workScheduleDataSource.getAllUserWorkShedules(dto);
     }

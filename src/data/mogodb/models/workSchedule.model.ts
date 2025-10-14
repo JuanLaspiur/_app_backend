@@ -1,6 +1,5 @@
 import mongoose, { Schema } from "mongoose";
 
-// Array de días
 export const DaysOfWeekArray = [
     'Monday',
     'Tuesday',
@@ -11,7 +10,6 @@ export const DaysOfWeekArray = [
     'Sunday',
 ] as const;
 
-// TypeScript type basado en el array
 export type DaysOfWeekType = (typeof DaysOfWeekArray)[number];
 
 const WorkScheduleSchema = new Schema(

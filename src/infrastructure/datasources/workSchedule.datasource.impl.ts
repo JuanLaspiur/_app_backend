@@ -9,17 +9,21 @@ export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
     private readonly handleError: (error: unknown) => never
   ) { }
 
-  async createWorkShedule(dto: jwtDto, createDto: CreateWorkScheduleDto): Promise<WorkScheduleEntity> {
-    const userId = this.verifyToken(dto);
-    if (!userId) console.log('Error de token')
-    if (!userId) throw CustomError.unauthorized('Error AuthToken');
+async createWorkShedule(dto: jwtDto, createDto: CreateWorkScheduleDto): Promise<WorkScheduleEntity> {
+  const userId = this.verifyToken(dto);
+  if (!userId) throw CustomError.unauthorized('Error AuthToken');
 
-    const [error, validDto] = CreateWorkScheduleDto.create(createDto);
-    if (error || !validDto) throw CustomError.badRequest('Bad Request');
+  const [error, validDto] = CreateWorkScheduleDto.create(createDto);
+  if (error || !validDto) throw CustomError.badRequest('Bad Request');
 
-    const doc = await WorkScheduleModel.create({ userId, ...validDto });
-    return WorkScheduleMapper.toEntity(doc);
-  }
+  const doc = await WorkScheduleModel.findOneAndUpdate(
+    { userId, day: validDto.day }, 
+    { userId, ...validDto },       
+    { new: true, upsert: true }   
+  );
+
+  return WorkScheduleMapper.toEntity(doc);
+}
 
 
   async updateWorkShedule(updateDto: UpdateWorkScheduleDto): Promise<WorkScheduleEntity> {
@@ -40,6 +44,19 @@ export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
     }
   }
 
+  async deleteWorkShedule(workScheduleId: string): Promise<void> {
+    const deleted = await WorkScheduleModel.findByIdAndDelete(workScheduleId);
+    if (!deleted) throw CustomError.notFound("Work schedule not found");
+  }
+
+  async deleteAllUserWorkShedules(dto: jwtDto): Promise<void> {
+    const userId = this.verifyToken(dto);
+    if (!userId) throw CustomError.unauthorized('Error AuthToken');
+
+    await WorkScheduleModel.deleteMany({ userId });
+  }
+
+
   async getAllUserWorkShedules(dto: jwtDto): Promise<WorkScheduleEntity[]> {
     try {
       const userId = this.verifyToken(dto);
@@ -50,4 +67,6 @@ export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
       this.handleError(error);
     }
   }
+
+
 }

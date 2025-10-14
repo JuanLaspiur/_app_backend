@@ -31,6 +31,11 @@ export * from './calendarTask/updateCalendarTask.dto';
 export * from './calendarTask/deleteCalendarTask.dto';
 
 
+// WorkSchedule
+export * from './workSchedule/createWorkShedule.dto';
+export * from './workSchedule/updateWorkShedule.dto';
+
+
 // JWT DTO 
 export * from './jwt.dto';
 

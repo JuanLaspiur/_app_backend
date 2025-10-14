@@ -10,18 +10,17 @@ export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
   ) { }
 
   async createWorkShedule(dto: jwtDto, createDto: CreateWorkScheduleDto): Promise<WorkScheduleEntity> {
-      try {
-      const userId = this.verifyToken(dto);
-       const [error, validDto] = CreateWorkScheduleDto.create(createDto);
+    const userId = this.verifyToken(dto);
+    if (!userId) console.log('Error de token')
+    if (!userId) throw CustomError.unauthorized('Error AuthToken');
 
-      if (error || !validDto) throw CustomError.badRequest('Bad Request');
+    const [error, validDto] = CreateWorkScheduleDto.create(createDto);
+    if (error || !validDto) throw CustomError.badRequest('Bad Request');
 
-      const doc = await WorkScheduleModel.create({ userId, ...validDto });
-      return WorkScheduleMapper.toEntity(doc);
-    } catch (error) {
-      this.handleError(error);
-    }
+    const doc = await WorkScheduleModel.create({ userId, ...validDto });
+    return WorkScheduleMapper.toEntity(doc);
   }
+
 
   async updateWorkShedule(updateDto: UpdateWorkScheduleDto): Promise<WorkScheduleEntity> {
     try {

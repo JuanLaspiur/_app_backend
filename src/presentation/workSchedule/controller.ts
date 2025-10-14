@@ -9,21 +9,22 @@ export class WorkScheduleController {
     ) { }
 
     async createWorkSchedule(req: Request, res: Response) {
-  
+
         try {
             const token = req.headers.authorization;
             if (!token)
                 return this.handleError(CustomError.badRequest("Missing token"), res, 1);
-            const [errorJWT, dto] = jwtDto.create({ token }); 
+            const [errorJWT, dto] = jwtDto.create({ token });
             if (errorJWT || !dto)
-                return this.handleError(CustomError.badRequest("Invalid token"+errorJWT), res, 2);
+                return this.handleError(CustomError.badRequest("Invalid token" + errorJWT), res, 2);
 
             const [error, createDto] = CreateWorkScheduleDto.create(req.body);
 
             if (error || !createDto)
-                throw CustomError.badRequest("Invalid data:  " +error);
+                throw CustomError.badRequest("Invalid data:  " + error);
 
             const workSchedule = await this.workScheduleRepository.createWorkShedule(dto, createDto);
+     
             return res.status(201).json(workSchedule);
         } catch (error) {
             this.handleError(error, res, 3);
@@ -47,15 +48,15 @@ export class WorkScheduleController {
         try {
             const token = req.headers.authorization;
             if (!token)
-                return this.handleError(CustomError.badRequest("Missing token"), res, 1);
+                throw CustomError.badRequest("Missing token")
             const [error, dto] = jwtDto.create({ token });
             if (error || !dto)
-                return this.handleError(CustomError.unauthorized(`${error}`), res, 2);
+                throw CustomError.unauthorized(`${error}`);
             const schedules = await this.workScheduleRepository.getAllUserWorkShedules(dto);
 
             return res.status(200).json(schedules);
         } catch (error) {
-            this.handleError(error, res, 1);
+            this.handleError(error, res);
         }
     }
 }

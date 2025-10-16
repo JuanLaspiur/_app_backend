@@ -1,6 +1,6 @@
 import { WorkScheduleDataSource, WorkScheduleEntity, CustomError } from "../../domain";
 import { jwtDto, CreateWorkScheduleDto, UpdateWorkScheduleDto } from "../../domain/dtos";
-import { WorkScheduleModel } from "../../data/mogodb";
+import { WorkDayLogModel, WorkScheduleModel } from "../../data/mogodb";
 import { WorkScheduleMapper } from "../mappers/workSchedule.mapper";
 
 export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
@@ -52,7 +52,7 @@ async createWorkShedule(dto: jwtDto, createDto: CreateWorkScheduleDto): Promise<
   async deleteAllUserWorkShedules(dto: jwtDto): Promise<void> {
     const userId = this.verifyToken(dto);
     if (!userId) throw CustomError.unauthorized('Error AuthToken');
-
+    await WorkDayLogModel.deleteMany({ userId });
     await WorkScheduleModel.deleteMany({ userId });
   }
 

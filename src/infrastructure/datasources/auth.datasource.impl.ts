@@ -13,11 +13,11 @@ export class AuthDataSourceImpl implements AuthDataSource {
     private readonly handleError: (error: unknown) => never,
     private readonly hashPassword: HashFunction = BcryptAdapter.hash,
     private readonly comparePassword: CompareFunction = BcryptAdapter.compare
-    
-  ) {}
+
+  ) { }
 
 
- 
+
   private async findUserByEmail(email: string) {
     const user = await UserModel.findOne({ email });
     if (!user) throw CustomError.badRequest("User does not exist");
@@ -46,41 +46,44 @@ export class AuthDataSourceImpl implements AuthDataSource {
   }
 
 
-async register({ firstName, lastName, password, email, username, phone }: RegisterDto): Promise<UserEntity> {
-  try {
-    const exists = await UserModel.exists({ email });
-    if (exists) throw CustomError.badRequest("User already exists");
+  async register({ firstName, lastName, password, email, username, phone }: RegisterDto): Promise<UserEntity> {
+    try {
+      const exists = await UserModel.exists({ email });
+      if (exists) throw CustomError.badRequest("User already exists");
 
-    const hashedPassword = await this.hashPassword(password);
-    const user = new UserModel({
-      firstName,
-      lastName,
-      email,
-      username,
-      phone,
-      password: hashedPassword,
-      role: "user",
-      isActive: true,
-    });
+      const hashedPassword = await this.hashPassword(password);
+      const user = new UserModel({
+        firstName,
+        lastName,
+        email,
+        username,
+        phone,
+        password: hashedPassword,
+        role: "user",
+        isActive: true,
+      });
 
-    await user.save();
+      await user.save();
 
-  
-    const workSchedules = DaysOfWeekArray.map(day => ({
-      userId: user._id.toString(),
-      day,
-      startTime: "00:00",
-      endTime: "00:00",
-      isWorkday: false,
-    }));
 
-    await WorkScheduleModel.insertMany(workSchedules);
+      const workSchedules = DaysOfWeekArray.map(day => ({
+        userId: user._id.toString(),
+        day,
+        startTime: "00:00",
+        endTime: "00:00",
+        isWorkday: false,
+      }));
 
-    return UserMapper.userEntityFromObject(user);
-  } catch (error) {
-    this.handleError(error);
+      for (const schedule of workSchedules) {
+        const doc = new WorkScheduleModel(schedule);
+        await doc.save(); 
+      }
+
+      return UserMapper.userEntityFromObject(user);
+    } catch (error) {
+      this.handleError(error);
+    }
   }
-}
 
   async updatePassword({ id, password, newPassword }: UpdatePasswordDto): Promise<UserEntity> {
     try {

@@ -1,12 +1,26 @@
 import mongoose, { Schema } from "mongoose";
 
+export enum WorkDayStatus {
+  PENDING = "pending",
+  OFF = "off",
+  HOLIDAY = "holiday",
+  ATTENDED = "attended",
+}
+
+
+
 const WorkDayLogSchema = new Schema(
   {
     userId: { type: String, required: true },
     scheduleId: { type: String, required: true },
     checkIn: { type: Date },
     checkOut: { type: Date },
-    status: { type: String },
+    status: {
+       type: String,
+       enum: Object.values(WorkDayStatus),
+        default: WorkDayStatus.OFF 
+
+     },
   },
    {
         timestamps: true,
@@ -22,3 +36,5 @@ const WorkDayLogSchema = new Schema(
 );
 
 export const WorkDayLogModel = mongoose.model("Work_Day_Log", WorkDayLogSchema);
+
+

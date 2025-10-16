@@ -1,4 +1,6 @@
 import mongoose, { Schema } from "mongoose";
+import { WorkDayLogModel } from "./workDayLog.model";
+import { createMissingSchedulesAndLogs } from "../helpers/workSchedule.helper";
 
 export const DaysOfWeekArray = [
     'Monday',
@@ -33,9 +35,9 @@ const WorkScheduleSchema = new Schema(
             type: String,
             required: true,
         },
-        isWorkday:{
-            type:Boolean,
-            default: false 
+        isWorkday: {
+            type: Boolean,
+            default: false
         }
     },
     {
@@ -50,5 +52,21 @@ const WorkScheduleSchema = new Schema(
         },
     }
 );
+
+WorkScheduleSchema.post("save", async function (doc) {
+    await createMissingSchedulesAndLogs(doc.userId, doc._id.toString(), doc.isWorkday);
+});
+
+WorkScheduleSchema.post("findOneAndUpdate", async function (doc) {
+    await createMissingSchedulesAndLogs(doc.userId, doc._id.toString(), doc.isWorkday);
+});
+
+WorkScheduleSchema.post("findOneAndDelete", async function (doc: any) {
+    if (doc) {
+        await WorkDayLogModel.deleteMany({ scheduleId: doc._id.toString() });
+    }
+});
+
+
 
 export const WorkScheduleModel = mongoose.model('Work_Schedule', WorkScheduleSchema);

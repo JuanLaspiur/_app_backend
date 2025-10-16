@@ -30,4 +30,4 @@ export * from './mappers/note.mapper';
 export * from './mappers/calendarTask.mapper';
 export * from './mappers/pushNotification.mapper';
 export * from './mappers/workSchedule.mapper';
-export * from './mappers/workLog.mapper';
+export * from './mappers/workDayLog.mapper';

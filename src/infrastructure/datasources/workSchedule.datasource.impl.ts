@@ -9,6 +9,7 @@ export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
     private readonly handleError: (error: unknown) => never
   ) { }
 
+  // TO DO ver tema de try catch
 async createWorkShedule(dto: jwtDto, createDto: CreateWorkScheduleDto): Promise<WorkScheduleEntity> {
   const userId = this.verifyToken(dto);
   if (!userId) throw CustomError.unauthorized('Error AuthToken');

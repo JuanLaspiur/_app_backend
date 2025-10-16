@@ -1,6 +1,6 @@
 import { WorkDayLogEntity } from "../../domain";
 
-export class WorkLogMapper {
+export class WorkDayLogMapper {
 
   static toEntity(data: any): WorkDayLogEntity {
     return new WorkDayLogEntity(

@@ -1,6 +1,6 @@
 import { BcryptAdapter } from "../../config/bcrypt";
 import { JwtAdapter } from "../../config/jwt";
-import { UserModel } from "../../data/mogodb";
+import { DaysOfWeekArray, UserModel, WorkScheduleModel } from "../../data/mogodb";
 import { AuthDataSource, CustomError, UserEntity } from "../../domain";
 import { LoginDto, RegisterDto, UpdatePasswordDto } from "../../domain/dtos";
 import { UserMapper } from "../mappers/user.mapper";
@@ -46,29 +46,41 @@ export class AuthDataSourceImpl implements AuthDataSource {
   }
 
 
-  async register({ firstName, lastName, password, email, username, phone }: RegisterDto): Promise<UserEntity> {
-    try {
-      const exists = await UserModel.exists({ email });
-      if (exists) throw CustomError.badRequest("User already exists");
+async register({ firstName, lastName, password, email, username, phone }: RegisterDto): Promise<UserEntity> {
+  try {
+    const exists = await UserModel.exists({ email });
+    if (exists) throw CustomError.badRequest("User already exists");
 
-      const hashedPassword = await this.hashPassword(password);
-      const user = new UserModel({
-        firstName,
-        lastName,
-        email,
-        username,
-        phone,
-        password: hashedPassword,
-        role: "user",
-        isActive: true,
-      });
+    const hashedPassword = await this.hashPassword(password);
+    const user = new UserModel({
+      firstName,
+      lastName,
+      email,
+      username,
+      phone,
+      password: hashedPassword,
+      role: "user",
+      isActive: true,
+    });
 
-      await user.save();
-      return UserMapper.userEntityFromObject(user);
-    } catch (error) {
-      this.handleError(error);
-    }
+    await user.save();
+
+  
+    const workSchedules = DaysOfWeekArray.map(day => ({
+      userId: user._id.toString(),
+      day,
+      startTime: "00:00",
+      endTime: "00:00",
+      isWorkday: false,
+    }));
+
+    await WorkScheduleModel.insertMany(workSchedules);
+
+    return UserMapper.userEntityFromObject(user);
+  } catch (error) {
+    this.handleError(error);
   }
+}
 
   async updatePassword({ id, password, newPassword }: UpdatePasswordDto): Promise<UserEntity> {
     try {

@@ -27,18 +27,16 @@ const WorkScheduleSchema = new Schema(
         },
         startTime: {
             type: String,
+            required: true,
         },
         endTime: {
             type: String,
+            required: true,
         },
-        notification: {
-            type: Boolean,
-            default: false,
-        },
-        active: {
-            type: Boolean,
-            default: true,
-        },
+        isWorkday:{
+            type:Boolean,
+            default: false 
+        }
     },
     {
         timestamps: true,

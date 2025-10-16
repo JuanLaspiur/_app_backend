@@ -1,19 +1,19 @@
-import { WorkLogEntity } from "../../domain";
+import { WorkDayLogEntity } from "../../domain";
 
 export class WorkLogMapper {
 
-  static toEntity(data: any): WorkLogEntity {
-    return new WorkLogEntity(
+  static toEntity(data: any): WorkDayLogEntity {
+    return new WorkDayLogEntity(
       data.id,
       data.userId,
       data.scheduleId,
       new Date(data.checkIn),
       data.checkOut ? new Date(data.checkOut) : undefined,
-      data.notes
+      data.status
     );
   }
 
-  static toEntities(dataArray: any[]): WorkLogEntity[] {
+  static toEntities(dataArray: any[]): WorkDayLogEntity[] {
     return dataArray.map(data => this.toEntity(data));
   }
 }

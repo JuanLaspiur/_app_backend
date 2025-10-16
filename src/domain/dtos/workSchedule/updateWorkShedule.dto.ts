@@ -6,12 +6,11 @@ export class UpdateWorkScheduleDto {
     public readonly day?: DaysOfWeekType,
     public readonly startTime?: string,
     public readonly endTime?: string,
-    public readonly notification?: boolean,
-    public readonly active?: boolean,
+    public readonly isWorkday?:Boolean
   ) {}
 
   static create(props: any): [string?, UpdateWorkScheduleDto?] {
-    const { id, day, startTime, endTime, notification, active } = props;
+    const { id, day, startTime, endTime, isWorkday } = props;
 
     if (!id) return ['id is required', undefined];
 
@@ -20,8 +19,7 @@ export class UpdateWorkScheduleDto {
       day,
       startTime,
       endTime,
-      notification,
-      active
+      isWorkday
     )];
   }
 }

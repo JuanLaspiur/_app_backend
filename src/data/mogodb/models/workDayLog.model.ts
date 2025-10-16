@@ -1,12 +1,12 @@
 import mongoose, { Schema } from "mongoose";
 
-const WorkLogSchema = new Schema(
+const WorkDayLogSchema = new Schema(
   {
     userId: { type: String, required: true },
     scheduleId: { type: String, required: true },
-    checkIn: { type: Date, required: true },
+    checkIn: { type: Date },
     checkOut: { type: Date },
-    notes: { type: String },
+    status: { type: String },
   },
    {
         timestamps: true,
@@ -21,4 +21,4 @@ const WorkLogSchema = new Schema(
     }
 );
 
-export const WorkLogModel = mongoose.model("Work_Log", WorkLogSchema);
+export const WorkDayLogModel = mongoose.model("Work_Day_Log", WorkDayLogSchema);

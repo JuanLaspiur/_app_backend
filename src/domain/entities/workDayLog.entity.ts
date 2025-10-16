@@ -1,12 +1,11 @@
-import { WorkScheduleEntity } from "./workSchedule.entity";
 
-export class WorkLogEntity {
+export class WorkDayLogEntity {
   constructor(
     public readonly id: string,
     public userId: string,
     public scheduleId: string, 
     public checkIn: Date,
     public checkOut?: Date,
-    public notes?: string,
+    public status?: string,
   ) {}
 }

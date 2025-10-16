@@ -5,11 +5,11 @@ export class WorkScheduleEntity {
     public readonly id: string,
     public userId: string,
     public day: DaysOfWeekType,
-    public startTime?: string,
-    public endTime?: string,
-    public notification: boolean = false,
-    public active: boolean = true,
+    public startTime: string,
+    public endTime: string, 
+    public isWorkday: Boolean,
     public createdAt: Date = new Date(),
     public updatedAt: Date = new Date(),
+
   ) {}
 }

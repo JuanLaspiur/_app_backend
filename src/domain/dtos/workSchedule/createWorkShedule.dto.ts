@@ -5,12 +5,11 @@ export class CreateWorkScheduleDto {
     public readonly day: DaysOfWeekType,
     public readonly startTime: string,
     public readonly endTime: string,
-    public readonly notification: boolean = false,
-    public readonly active: boolean = true,
+    public readonly isWorkday : Boolean
   ) {}
 
   static create(props: any): [string?, CreateWorkScheduleDto?] {
-    const { day, startTime, endTime, notification, active } = props;
+    const { day, startTime, endTime, isWorkday } = props;
 
     if (!day) return ['day is required', undefined];
     if (!startTime) return ['startTime is required', undefined];
@@ -24,8 +23,11 @@ export class CreateWorkScheduleDto {
       day,
       startTime,
       endTime,
-      notification ?? false,
-      active ?? true
+      isWorkday
     )];
   }
 }
+
+/// crear semana de horarios 
+// despues crear el log semanal
+// despues crear el log diario

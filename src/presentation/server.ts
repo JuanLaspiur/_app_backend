@@ -1,5 +1,6 @@
 import express, { Application, Router } from "express";
 import path from "path";
+import cors from "cors"; // << agregar import de cors
 
 export class Server {
   private readonly port: number;
@@ -10,15 +11,18 @@ export class Server {
     this.port = port;
     this.app = express();
     this.routes = routes;
-    this.middlewares()
+    this.middlewares();
   }
 
   private middlewares(): void {
+  
+    this.app.use(cors());  // TO DO usar patron adaptador y cerrar en producción
+ 
+
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
     this.app.use(this.routes);
-
   }
 
   public async start(): Promise<void> {
@@ -26,5 +30,4 @@ export class Server {
       console.log(`Servidor escuchando en http://localhost:${this.port}`);
     });
   }
-
 }

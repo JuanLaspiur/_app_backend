@@ -1,63 +1,67 @@
 import { Request, Response } from "express";
 import { jwtDto } from "../../domain/dtos";
-import { CustomError, WorkLogRepository } from "../../domain";
+import { CustomError, WorkDayLogRepository } from "../../domain";
 
-export class WorkLogController {
+export class WorkDayLogController {
+  constructor(
+    private readonly workLogRepository: WorkDayLogRepository,
+    private readonly handleError: (error: unknown, res: Response, num?: number) => void
+  ) {}
 
-    constructor(
-        private readonly workLogRepository: WorkLogRepository,
-        private readonly handleError: (error: unknown, res: Response, num?: number) => void
-    ) { }
+  async openLog(req: Request, res: Response) {
+    try {
+      const token = req.headers.authorization;
+      const logId = req.params.id;
 
+      if (!token) throw CustomError.badRequest("Missing token");
 
+      const [errorJWT, dto] = jwtDto.create({ token });
+      if (errorJWT || !dto) throw CustomError.badRequest("Invalid token: " + errorJWT);
 
-    async openLog(req: Request, res: Response) {
-        const token = req.headers.authorization;
-        const scheduleId = req.params.id;
-        if (!token)
-            return this.handleError(CustomError.badRequest("Missing token"), res, 1);
-        const [errorJWT, dto] = jwtDto.create({ token });
-        if (errorJWT || !dto)
-            return this.handleError(CustomError.badRequest("Invalid token" + errorJWT), res, 2);
+      if (!logId) throw CustomError.badRequest("Missing logId by params :id ");
 
-        if (!scheduleId)
-            return this.handleError(CustomError.badRequest("Missing scheduleId"), res, 3);
-        this.workLogRepository.createLog(dto, scheduleId);
+      const log = await this.workLogRepository.openLog(dto, logId);
+      return res.status(200).json(log);
 
+    } catch (error) {
+      this.handleError(error, res);
     }
+  }
 
+  async closeLog(req: Request, res: Response) {
+    try {
+      const token = req.headers.authorization;
+      const logId = req.params.id;
 
+      if (!token) throw CustomError.badRequest("Missing token");
 
-    async closeLog(req: Request, res: Response) {
-        const token = req.headers.authorization;
-        const logId = req.params.id;
-        if (!token)
-            return this.handleError(CustomError.badRequest("Missing token"), res, 1);
-        const [errorJWT, dto] = jwtDto.create({ token });
-        if (errorJWT || !dto)
-            return this.handleError(CustomError.badRequest("Invalid token" + errorJWT), res, 2);
-        if (!logId)
-            return this.handleError(CustomError.badRequest("Missing scheduleId"), res, 3);
-        this.workLogRepository.closeLog(dto, logId);
+      const [errorJWT, dto] = jwtDto.create({ token });
+      if (errorJWT || !dto) throw CustomError.badRequest("Invalid token: " + errorJWT);
 
+      if (!logId) throw CustomError.badRequest("Missing logId");
 
+      const log = await this.workLogRepository.closeLog(dto, logId);
+      return res.status(200).json(log);
+
+    } catch (error) {
+      this.handleError(error, res);
     }
+  }
 
+  async getAllUserLogs(req: Request, res: Response) {
+    try {
+      const token = req.headers.authorization;
 
+      if (!token) throw CustomError.badRequest("Missing token");
 
-    async getAllUserLogs(req: Request, res: Response) {
+      const [errorJWT, dto] = jwtDto.create({ token });
+      if (errorJWT || !dto) throw CustomError.badRequest("Invalid token: " + errorJWT);
 
+      const logs = await this.workLogRepository.getUserWorkWeekLogs(dto);
+      return res.status(200).json(logs);
+
+    } catch (error) {
+      this.handleError(error, res);
     }
-
-
-
-    async deleteLog(req: Request, res: Response) {
-
-    }
-
-
-
-    async deleteAllUserWorkSchedules(req: Request, res: Response) {
-
-    }
+  }
 }

@@ -3,7 +3,7 @@ import { jwtDto } from "../../domain/dtos";
 import { WorkDayLogModel, WorkScheduleModel, WorkDayStatus } from "../../data/mogodb";
 import { WorkDayLogMapper } from "../mappers/workDayLog.mapper";
 
-export class WorkLogDataSourceImpl implements WorkDayLogDataSource {
+export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
 
   constructor(
     private readonly verifyToken: (dto: jwtDto) => string,

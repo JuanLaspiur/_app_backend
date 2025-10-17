@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
-import { jwtDto } from "../../domain/dtos";
+import { CloseLogDto, jwtDto, OpenLogDto } from "../../domain/dtos";
 import { CustomError, WorkDayLogRepository } from "../../domain";
 
 export class WorkDayLogController {
   constructor(
     private readonly workLogRepository: WorkDayLogRepository,
     private readonly handleError: (error: unknown, res: Response, num?: number) => void
-  ) {}
+  ) { }
 
   async openLog(req: Request, res: Response) {
+   
     try {
       const token = req.headers.authorization;
       const logId = req.params.id;
@@ -18,15 +19,19 @@ export class WorkDayLogController {
       const [errorJWT, dto] = jwtDto.create({ token });
       if (errorJWT || !dto) throw CustomError.badRequest("Invalid token: " + errorJWT);
 
-      if (!logId) throw CustomError.badRequest("Missing logId by params :id ");
+      const [error, openLogDto] = OpenLogDto.create({ logId, entryToken: '4444' })
 
-      const log = await this.workLogRepository.openLog(dto, logId);
+      if (error || !openLogDto) {
+        throw CustomError.badRequest("Invalid entry token: " + error);
+      }
+      const log = await this.workLogRepository.openLog(dto, openLogDto);
       return res.status(200).json(log);
 
     } catch (error) {
-      this.handleError(error, res);
+       this.handleError(error, res);
     }
   }
+
 
   async closeLog(req: Request, res: Response) {
     try {
@@ -38,9 +43,13 @@ export class WorkDayLogController {
       const [errorJWT, dto] = jwtDto.create({ token });
       if (errorJWT || !dto) throw CustomError.badRequest("Invalid token: " + errorJWT);
 
-      if (!logId) throw CustomError.badRequest("Missing logId");
+      const [error, closeLogDto] = CloseLogDto.create({ logId, entryToken: '4444' })
 
-      const log = await this.workLogRepository.closeLog(dto, logId);
+      if (error || !closeLogDto) {
+        throw CustomError.badRequest("Invalid entry token: " + error);
+      }
+
+      const log = await this.workLogRepository.closeLog(dto, closeLogDto);
       return res.status(200).json(log);
 
     } catch (error) {

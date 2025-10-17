@@ -8,12 +8,12 @@ export async function createMissingSchedulesAndLogs(userId: string, currentSched
 
   const missingDays = DaysOfWeekArray.filter(day => !existingDaysSet.has(day));
 
-  // quiero que siempre se ponga 00 en iso
+// pasar a formato ISO que sea  00:00 para en cualquier lugar del mundo
   const schedulesToCreate = missingDays.map(day => ({
     userId,
     day,
-    startTime: "00:00",
-    endTime: "00:00",
+    startTime: "1970-01-01T00:00:00.000Z",
+    endTime: "1970-01-01T00:00:00.000Z",
     isWorkday: false,
   }));
 

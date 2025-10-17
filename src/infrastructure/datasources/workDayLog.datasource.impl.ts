@@ -1,5 +1,5 @@
 import { CustomError, WorkDayLogDataSource, WorkDayLogEntity } from "../../domain";
-import { jwtDto } from "../../domain/dtos";
+import { CloseLogDto, jwtDto, OpenLogDto } from "../../domain/dtos";
 import { WorkDayLogModel, WorkScheduleModel, WorkDayStatus } from "../../data/mogodb";
 import { WorkDayLogMapper } from "../mappers/workDayLog.mapper";
 
@@ -14,13 +14,13 @@ export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
 
 
 
-  async openLog(dto: jwtDto, logId: string): Promise<WorkDayLogEntity> {
+  async openLog(dto: jwtDto, openLogDto:OpenLogDto): Promise<WorkDayLogEntity> {
     const userId = this.verifyToken(dto);
 
     try {
       if (!userId) throw CustomError.unauthorized("unauthorized: invalid authtoken");
 
-      const workdaylog = await WorkDayLogModel.findById(logId);
+      const workdaylog = await WorkDayLogModel.findById(openLogDto.logId);
       if (!workdaylog) throw CustomError.badRequest("Work day log not found");
 
       const workSchedule = await WorkScheduleModel.findById(workdaylog.scheduleId);
@@ -44,12 +44,12 @@ export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
     }
   }
 
-  async closeLog(dto: jwtDto, logId: string): Promise<WorkDayLogEntity> {
+  async closeLog(dto: jwtDto, closeLog: CloseLogDto): Promise<WorkDayLogEntity> {
     const userId = this.verifyToken(dto);
     try {
       if (!userId) throw CustomError.unauthorized("unauthorized: invalid authtoken");
 
-      const workdaylog = await WorkDayLogModel.findById(logId);
+      const workdaylog = await WorkDayLogModel.findById(closeLog.logId);
       if (!workdaylog) throw CustomError.badRequest("Work day log not found");
 
       const now = new Date();

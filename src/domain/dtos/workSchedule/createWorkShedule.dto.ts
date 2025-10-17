@@ -28,6 +28,3 @@ export class CreateWorkScheduleDto {
   }
 }
 
-/// crear semana de horarios 
-// despues crear el log semanal
-// despues crear el log diario

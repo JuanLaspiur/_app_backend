@@ -36,6 +36,12 @@ export * from './workSchedule/createWorkShedule.dto';
 export * from './workSchedule/updateWorkShedule.dto';
 
 
+// workDayLog
+export * from './workDayLog/openLog.dto';
+export * from './workDayLog/closeLog.dto';
+
+
+
 // JWT DTO 
 export * from './jwt.dto';
 

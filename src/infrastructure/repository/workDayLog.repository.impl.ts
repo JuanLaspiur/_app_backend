@@ -1,5 +1,5 @@
 import { WorkDayLogDataSource, WorkDayLogEntity, WorkDayLogRepository } from "../../domain";
-import { jwtDto } from "../../domain/dtos";
+import { CloseLogDto, jwtDto, OpenLogDto } from "../../domain/dtos";
 
 export class WorkDayLogRepositoryImpl implements WorkDayLogRepository {
 
@@ -11,11 +11,11 @@ export class WorkDayLogRepositoryImpl implements WorkDayLogRepository {
   getUserWorkWeekLogs(dto: jwtDto): Promise<WorkDayLogEntity[]> {
     return this.datasource.getUserWorkWeekLogs(dto);
   }
-  openLog(dto: jwtDto, logId: string): Promise<WorkDayLogEntity> {
-    return this.datasource.openLog(dto, logId);
+  openLog(dto: jwtDto, openLogDto: OpenLogDto): Promise<WorkDayLogEntity> {
+    return this.datasource.openLog(dto, openLogDto);
   }
-  closeLog(dto: jwtDto, logId: string): Promise<WorkDayLogEntity> {
-    return this.datasource.closeLog(dto, logId);
+  closeLog(dto: jwtDto, closeLogDto: CloseLogDto): Promise<WorkDayLogEntity> {
+    return this.datasource.closeLog(dto, closeLogDto);
   }
   markAsAbsentLog(dto: jwtDto, logId: string): Promise<WorkDayLogEntity> {
       return this.datasource.markAsAbsentLog(dto, logId);

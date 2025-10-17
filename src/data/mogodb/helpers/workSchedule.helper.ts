@@ -8,6 +8,7 @@ export async function createMissingSchedulesAndLogs(userId: string, currentSched
 
   const missingDays = DaysOfWeekArray.filter(day => !existingDaysSet.has(day));
 
+  // quiero que siempre se ponga 00 en iso
   const schedulesToCreate = missingDays.map(day => ({
     userId,
     day,

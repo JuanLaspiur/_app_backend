@@ -13,8 +13,10 @@ export class WorkDayLogRoutes {
         const router = Router();
         router.put('/open/:id', controller.openLog.bind(controller));
         router.put('/close/:id', controller.closeLog.bind(controller));
-        router.get('/getAll', controller.getAllUserLogs.bind(controller));
-        
+        router.put('/absent/:id', controller.markAsAbsentLog.bind(controller));
+        router.get('/getAll', controller.getUserWorkWeekLogs.bind(controller));
+        router.get('/get-today', controller.getTodayWorkLog.bind(controller));
+
         return router;
     }
 

@@ -48,7 +48,29 @@ export class WorkDayLogController {
     }
   }
 
-  async getAllUserLogs(req: Request, res: Response) {
+
+  async markAsAbsentLog(req: Request, res: Response) {
+    try {
+      const token = req.headers.authorization;
+      const logId = req.params.id;
+
+      if (!token) throw CustomError.badRequest("Missing token");
+
+      const [errorJWT, dto] = jwtDto.create({ token });
+      if (errorJWT || !dto) throw CustomError.badRequest("Invalid token: " + errorJWT);
+
+      if (!logId) throw CustomError.badRequest("Missing logId");
+
+      const log = await this.workLogRepository.markAsAbsentLog(dto, logId);
+      return res.status(200).json(log);
+
+    } catch (error) {
+      this.handleError(error, res);
+    }
+  }
+
+
+  async getUserWorkWeekLogs(req: Request, res: Response) {
     try {
       const token = req.headers.authorization;
 
@@ -64,4 +86,26 @@ export class WorkDayLogController {
       this.handleError(error, res);
     }
   }
+
+  async getTodayWorkLog(req: Request, res: Response) {
+    try {
+      const token = req.headers.authorization;
+      if (!token) throw CustomError.badRequest("Missing token");
+
+      const [errorJWT, dto] = jwtDto.create({ token });
+      if (errorJWT || !dto) throw CustomError.badRequest("Invalid token: " + errorJWT);
+
+
+      const log = await this.workLogRepository.getTodayWorkLog(dto);
+      return res.status(200).json(log);
+
+    } catch (error) {
+      this.handleError(error, res);
+    }
+  }
+
+
+
+
+
 }

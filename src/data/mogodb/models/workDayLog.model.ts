@@ -1,12 +1,14 @@
 import mongoose, { Schema } from "mongoose";
-import { WorkScheduleModel } from "./workSchedule.model";
+
 export enum WorkDayStatus {
   PENDING = "pending",
   OFF = "off",
   HOLIDAY = "holiday",
   ATTENDED = "attended",
-  LATE = "late", 
+  LATE = "late",
+  ABSENT = "absent",  
 }
+
 
 
 

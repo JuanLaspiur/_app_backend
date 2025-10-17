@@ -7,19 +7,21 @@ import { NoteRoutes } from "./note/routes";
 import { CalendarTaskRoutes } from "./calendarTask/routes";
 import { PushNotificationRoutes } from './pushnotification/routes';
 import { WorkScheduleRoutes } from "./workSchedule/routes";
+import { WorkDayLogRoutes } from "./workLog/routes";
 
 export class AppRoutes {
-   static get routes():Router{
-    const router = Router();   
-    router.use('/api/auth', AuthRoutes.routes);
-    router.use('/api/users', UserRoutes.routes);
-    router.use('/api/vacations', VacationRoutes.routes);
-    router.use('/api/notifications', NotificationRoutes.routes);
-    router.use('/api/notes', NoteRoutes.routes);
-    router.use('/api/calendarTasks', CalendarTaskRoutes.routes);
-    router.use('/api/pushNotifications', PushNotificationRoutes.routes);
-    router.use('/api/workSchedules', WorkScheduleRoutes.routes);
+    static get routes(): Router {
+        const router = Router();
+        router.use('/api/auth', AuthRoutes.routes);
+        router.use('/api/users', UserRoutes.routes);
+        router.use('/api/vacations', VacationRoutes.routes);
+        router.use('/api/notifications', NotificationRoutes.routes);
+        router.use('/api/notes', NoteRoutes.routes);
+        router.use('/api/calendarTasks', CalendarTaskRoutes.routes);
+        router.use('/api/pushNotifications', PushNotificationRoutes.routes);
+        router.use('/api/workSchedules', WorkScheduleRoutes.routes);
+        router.use('/api/workDayLogs', WorkDayLogRoutes.routes);
 
-    return router;
-}
+        return router;
+    }
 }

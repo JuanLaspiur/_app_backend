@@ -41,6 +41,10 @@ export * from './workDayLog/openLog.dto';
 export * from './workDayLog/closeLog.dto';
 
 
+// departament
+export * from './department/createDepartment.dto';
+export * from './department/updateDepartment.dto';
+
 
 // JWT DTO 
 export * from './jwt.dto';

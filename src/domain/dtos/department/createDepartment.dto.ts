@@ -1,3 +1,4 @@
+
 export class CreateDepartmentDto {
   constructor(
     public readonly name: string,
@@ -9,8 +10,9 @@ export class CreateDepartmentDto {
   static create(object: any): [string?, CreateDepartmentDto?] {
     const { name, manager, location, teams } = object;
 
-    if (!name) return ["El nombre del departamento es requerido"];
-    if (!manager) return ["El encargado (manager) es requerido"];
+if (!name) return ["The department name ('name') is required"];
+if (!manager) return ["The manager ('manager') is required"];
+
 
     return [
       undefined,

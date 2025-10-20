@@ -16,4 +16,4 @@ export const TeamSchema = new Schema({
     },
 });
 
-export const Department = mongoose.model("Team", TeamSchema);
+export const TeamModel = mongoose.model("Team", TeamSchema);

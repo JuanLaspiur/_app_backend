@@ -8,6 +8,8 @@ export * from './datasources/calendartTask.datasource.impl';
 export * from './datasources/pushNotification.datasource.impl';
 export * from './datasources/workSchedule.datasource.impl';
 export * from './datasources/workDayLog.datasource.impl';
+export * from './datasources/departament.datasource.impl';
+export * from './datasources/team.datasource.impl';
 
 
 // repositories
@@ -20,7 +22,8 @@ export * from './repository/calendarTask.repository.impl';
 export * from './repository/pushNotification.repository.impl';
 export * from './repository/workSchedule.repository.impl';
 export * from './repository/workDayLog.repository.impl';
-
+export * from './repository/departament.repository.impl';
+export * from './repository/team.repository.impl';
 
 // mappers
 export * from './mappers/user.mapper';
@@ -31,3 +34,5 @@ export * from './mappers/calendarTask.mapper';
 export * from './mappers/pushNotification.mapper';
 export * from './mappers/workSchedule.mapper';
 export * from './mappers/workDayLog.mapper';
+export * from './mappers/departament.mapper';
+export * from './mappers/team.mapper';

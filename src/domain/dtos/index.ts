@@ -45,6 +45,10 @@ export * from './workDayLog/closeLog.dto';
 export * from './department/createDepartment.dto';
 export * from './department/updateDepartment.dto';
 
+// team
+export { CreateTeamDto } from "./team/createTeam.dto";
+export { UpdateTeamDto } from "./team/updateTeam.dto";
+
 
 // JWT DTO 
 export * from './jwt.dto';

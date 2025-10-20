@@ -15,7 +15,7 @@ export class NoteDataSourceImpl implements NoteDataSource {
             const userId = this.verifyToken(dto);
 
             const [error, validDto] = CreateNoteDto.create(createNoteDto);
-            if (error || !validDto) throw new Error(error ?? "Invalid note data");
+            if (error || !validDto) throw new Error(error ?? "Invalid note data"); // TO DO Custom Error
 
             const doc = await NoteModel.create({ userId, ...validDto });
             return NoteMapper.toEntity(doc);

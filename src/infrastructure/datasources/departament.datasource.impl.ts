@@ -40,7 +40,7 @@ export class DepartmentDataSourceImpl implements DepartmentDataSource {
         })
         .exec();
 
-      return DepartamentMapper.toEntitiesWithManagerPopulate(docs);
+      return DepartamentMapper.toEntities(docs);
     } catch (error) {
       this.handleError(error);
     }

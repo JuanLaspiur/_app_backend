@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 export const TeamSchema = new Schema({
     name: { type: String, required: true },
-    members: [{ type: String }],
+    members: [{ type: Schema.Types.ObjectId, ref: "User" }], // quisiera que siempre se devuelva el User entero
 }, {
     timestamps: true,
     toJSON: {

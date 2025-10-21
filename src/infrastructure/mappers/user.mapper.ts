@@ -38,6 +38,10 @@ export class UserMapper {
       throw CustomError.badRequest("Missing or invalid email");
     }
 
+    if (!password || typeof password !== "string") {
+      throw CustomError.badRequest("Missing or invalid password");
+    }
+
     // Mapear session si existe
     let userSession: UserSession | undefined;
     if (session) {

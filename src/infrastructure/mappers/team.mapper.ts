@@ -1,6 +1,5 @@
 import { TeamEntity } from "../../domain/entities/team.entity";
 
-
 export class TeamMapper {
   static toEntity(doc: any): TeamEntity {
     return new TeamEntity(
@@ -16,3 +15,5 @@ export class TeamMapper {
     return docs.map((doc) => this.toEntity(doc));
   }
 }
+
+

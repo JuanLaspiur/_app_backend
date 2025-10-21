@@ -1,8 +1,9 @@
 import { TeamDataSource, TeamEntity, TeamRepository } from "../../domain";
-import { CreateTeamDto, jwtDto, UpdateTeamDto } from "../../domain/dtos";
+import { AddMemberDto, CreateTeamDto, jwtDto, RemoveMemberDto, UpdateTeamDto } from "../../domain/dtos";
 
 export class TeamRepositoryImpl implements TeamRepository {
     constructor(private readonly dataSource: TeamDataSource) { }
+
     createTeam(dto: jwtDto, createTeamDto: CreateTeamDto): Promise<TeamEntity> {
         return this.dataSource.createTeam(dto, createTeamDto);
     }
@@ -13,8 +14,13 @@ export class TeamRepositoryImpl implements TeamRepository {
         return this.dataSource.updateTeam(dto, updateTeamDto);
     }
     deleteTeam(dto: jwtDto, teamId: string): Promise<boolean> {
-       return this.dataSource.deleteTeam(dto, teamId);
+        return this.dataSource.deleteTeam(dto, teamId);
     }
-
+    addMember(dto: jwtDto, addMemberDto: AddMemberDto): Promise<TeamEntity | null> {
+        return this.dataSource.addMember(dto, addMemberDto);
+    }
+    removeMember(dto: jwtDto, removeMemberDto: RemoveMemberDto): Promise<TeamEntity | null> {
+        return this.dataSource.removeMember(dto, removeMemberDto);
+    }
 
 }

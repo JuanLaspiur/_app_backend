@@ -3,9 +3,9 @@ import { TeamController } from './controller';
 import { TeamDataSourceImpl, TeamRepositoryImpl } from "../../infrastructure";
 import { verifyToken, handleError, handleErrorController } from "../../config/helpers";
 
-export class TeamRoutes{
+export class TeamRoutes {
 
-    static get routes (): Router{
+    static get routes(): Router {
         const datasource = new TeamDataSourceImpl(verifyToken, handleError);
         const teamRepository = new TeamRepositoryImpl(datasource);
         const controller = new TeamController(teamRepository, handleErrorController);
@@ -15,7 +15,9 @@ export class TeamRoutes{
         router.put('/update/:id', controller.updatedTeam.bind(controller));
         router.get('/getAll', controller.getAllTeams.bind(controller));
         router.delete('/delete/:id', controller.deleteTeam.bind(controller));
-
+        router.put('/addMember/:id', controller.addMember.bind(controller));
+        router.put('/removeMember/:id', controller.removeMember.bind(controller));
+        
         return router;
     }
 

@@ -46,8 +46,10 @@ export * from './department/createDepartment.dto';
 export * from './department/updateDepartment.dto';
 
 // team
-export { CreateTeamDto } from "./team/createTeam.dto";
-export { UpdateTeamDto } from "./team/updateTeam.dto";
+export * from "./team/createTeam.dto";
+export * from "./team/updateTeam.dto";
+export * from "./team/addMember.dto";
+export * from "./team/removeMember.dto";
 
 
 // JWT DTO 

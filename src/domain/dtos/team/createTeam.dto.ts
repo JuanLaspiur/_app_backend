@@ -6,7 +6,7 @@ export class CreateTeamDto {
     public readonly members: string[],
   ) {}
 
-  static create(object: any): [string?, CreateTeamDto?] {
+  static create(object: any): [string?, CreateTeamDto?] { // TO DO poner obj rigido
     if (!object) return ["No object provided"];
 
     const { departmentId, name, members } = object;

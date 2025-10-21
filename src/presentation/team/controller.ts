@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateTeamDto, jwtDto, UpdateTeamDto } from "../../domain/dtos";
+import { AddMemberDto, CreateTeamDto, jwtDto, RemoveMemberDto, UpdateTeamDto } from "../../domain/dtos";
 import { CustomError, TeamRepository } from "../../domain";
 
 export class TeamController {
@@ -13,7 +13,7 @@ export class TeamController {
         try {
             const data = req.body;
             const departmentId = req.params.departmentId;
-            const [errorTeam, createTeamDto] = CreateTeamDto.create({departmentId,...data});
+            const [errorTeam, createTeamDto] = CreateTeamDto.create({ departmentId, ...data });
             if (errorTeam || !createTeamDto) throw CustomError.badRequest(errorTeam ? errorTeam : 'Error create team body info');
 
             const authHeader = req.headers.authorization;
@@ -55,8 +55,8 @@ export class TeamController {
 
             const [errorJwt, dto] = jwtDto.create({ token: authHeader });
             if (errorJwt || !dto) throw CustomError.unauthorized(errorJwt ? errorJwt : 'Unauthorized');
-            const note = await this.teamRepository.updateTeam(dto, updateTeamDto);
-            return res.status(201).json(note);
+            const team = await this.teamRepository.updateTeam(dto, updateTeamDto);
+            return res.status(201).json(team);
 
         } catch (error) {
             this.handleError(error, res);
@@ -70,7 +70,43 @@ export class TeamController {
             if (!authHeader) throw CustomError.unauthorized('unauthorized');
             const [errorJwt, dto] = jwtDto.create({ token: authHeader });
             if (errorJwt || !dto) throw CustomError.unauthorized(errorJwt ? errorJwt : 'Unauthorized');
-            const note = await this.teamRepository.deleteTeam(dto, teamId);
+             await this.teamRepository.deleteTeam(dto, teamId);
+             return res.status(201).json({message:"Team has been deleted"});
+        } catch (error) {
+            this.handleError(error, res);
+        }
+    }
+
+    async addMember(req: Request, res: Response) {
+        try {
+            const teamId = req.params.id;
+            const data = req.body;
+            const authHeader = req.headers.authorization;
+            if (!authHeader) throw CustomError.unauthorized('unauthorized');
+            const [errorJwt, dto] = jwtDto.create({ token: authHeader });
+            if (errorJwt || !dto) throw CustomError.unauthorized(errorJwt ? errorJwt : 'Unauthorized');
+            const [error, dtaDto] = AddMemberDto.create({ teamId, ...data })
+            if (error || !dtaDto) throw CustomError.badRequest(error ? error : 'Unauthorized');
+            const team = await this.teamRepository.addMember(dto, dtaDto);
+            return res.status(201).json(team);
+        } catch (error) {
+            this.handleError(error, res);
+        }
+    }
+
+    
+    async removeMember(req: Request, res: Response) {
+        try {
+            const teamId = req.params.id;
+            const data = req.body;
+            const authHeader = req.headers.authorization;
+            if (!authHeader) throw CustomError.unauthorized('unauthorized');
+            const [errorJwt, dto] = jwtDto.create({ token: authHeader });
+            if (errorJwt || !dto) throw CustomError.unauthorized(errorJwt ? errorJwt : 'Unauthorized');
+            const [error, dtaDto] = RemoveMemberDto.create({ teamId, ...data })
+            if (error || !dtaDto) throw CustomError.badRequest(error ? error : 'Unauthorized');
+            const team = await this.teamRepository.removeMember(dto, dtaDto);
+            return res.status(201).json(team);
         } catch (error) {
             this.handleError(error, res);
         }

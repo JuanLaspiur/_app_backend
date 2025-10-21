@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import env from "env-var";
 
 export const envs = {
@@ -5,7 +6,7 @@ export const envs = {
   MONGO_URL: env.get("MONGO_URL").required().asString(),
   MONGO_DB_NAME: env.get("MONGO_DB_NAME").required().asString(),
   JWT_SECRET: env.get("JWT_SECRET").required().asString(),
-  EMAIL_PROVIDER: env.get("EMAIL_PROVIDER").required().asEnum(["nodemailer"]), // si en el futuro hay otros proveedores
+  EMAIL_PROVIDER: env.get("EMAIL_PROVIDER").required().asEnum(["nodemailer"]), 
   SMTP_HOST: env.get("SMTP_HOST").required().asString(),
   SMTP_PORT: env.get("SMTP_PORT").required().asPortNumber(),
   SMTP_USER: env.get("SMTP_USER").required().asString(),

@@ -8,44 +8,35 @@ export class TeamDataSourceImpl implements TeamDataSource {
   constructor(
     private readonly verifyToken: (dto: jwtDto) => string,
     private readonly handleError: (error: unknown) => never
-  ) { }
+  ) {}
 
-  async createTeam(dto: jwtDto, createTeamDto: CreateTeamDto): Promise<TeamEntity> {
-    try {
-      this.verifyToken(dto);
-      const { departmentId, ...createDto } = createTeamDto;
+async createTeam(dto: jwtDto, createTeamDto: CreateTeamDto): Promise<TeamEntity> {
+  try {
+    this.verifyToken(dto);
 
-      const department = await DepartmentModel.findById(departmentId);
-      if (!department) throw CustomError.notFound("Department not found");
+   const { departmentId, ...createDto } = createTeamDto;
 
-      const teamDoc = await TeamModel.create({
-        ...createDto,
-      });
+    const department = await DepartmentModel.findById(departmentId);
+    if (!department) throw CustomError.notFound("Department not found");
 
-      department.teams.push(teamDoc);
-      await department.save();
+    const teamDoc = await TeamModel.create({
+      ...createDto,
+    });
 
-      const populatedTeam = await teamDoc.populate({
-        path: "members",
-        select: "-password -session",
-      });
+    department.teams.push(teamDoc.id);
+    await department.save();
 
-      if (!populatedTeam) throw CustomError.notFound("Team not found after creation");
-
-      return TeamMapper.toEntity(populatedTeam);
-    } catch (error) {
-      this.handleError(error);
-    }
+    return TeamMapper.toEntity(teamDoc);
+  } catch (error) {
+    this.handleError(error);
   }
-
+}
 
   async getAllTeams(dto: jwtDto): Promise<TeamEntity[]> {
     try {
       this.verifyToken(dto);
-      const docs = await TeamModel.find().populate({
-        path: "members",
-        select: "-password -session",
-      });
+
+      const docs = await TeamModel.find();
       return TeamMapper.toEntities(docs);
     } catch (error) {
       this.handleError(error);
@@ -56,11 +47,7 @@ export class TeamDataSourceImpl implements TeamDataSource {
     try {
       this.verifyToken(dto);
 
-      const doc = await TeamModel.findByIdAndUpdate(updateTeamDto.id, updateTeamDto, { new: true }).populate({
-        path: "members",
-        select: "-password -session",
-      });
-;
+      const doc = await TeamModel.findByIdAndUpdate(updateTeamDto.id, updateTeamDto, { new: true });
       return doc ? TeamMapper.toEntity(doc) : null;
     } catch (error) {
       this.handleError(error);

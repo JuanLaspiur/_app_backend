@@ -8,11 +8,11 @@ import { UserMapper } from "../mappers/user.mapper";
 export class UserDataSourceImpl implements UserDataSource {
   constructor(
     private readonly handleError: (error: unknown) => never
-  ) {}
+  ) { }
 
   async getAllUsers(): Promise<UserEntity[]> {
     try {
-      const users = await UserModel.find();
+      const users = await UserModel.find()
       return UserMapper.toEntities(users);
     } catch (error) {
       this.handleError(error);

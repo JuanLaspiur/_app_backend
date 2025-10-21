@@ -14,7 +14,8 @@ export class UserController {
     this.userRepository
       .getAllUsers()
       .then((users) => res.status(200).json(users))
-      .catch((error) => this.handleError(error, res, 1));
+      .catch((error) => {
+       this.handleError(error, res, 1)});
   }
 
   getAllActiveUsers(req: Request, res: Response) {

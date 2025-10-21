@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Query, Schema } from 'mongoose';
 
 const SessionSchema = new Schema(
   {
@@ -19,7 +19,6 @@ const SessionSchema = new Schema(
     _id: false, 
   }
 );
-
 const UserSchema = new Schema(
   {
     firstName: {
@@ -69,6 +68,11 @@ const UserSchema = new Schema(
     location: {
       type: String,
     },
+    teamMember: {
+      type: Schema.Types.ObjectId,
+      ref: 'TeamMember',
+      required: false,
+    },
   },
   {
     timestamps: true,
@@ -86,5 +90,15 @@ UserSchema.set('toJSON', {
   },
 });
 
+function autoPopulateTeamMember(this: Query<any, any>, next: () => void) {
+  this.populate({
+        path: 'teamMember', 
+        select: '-userId',
+  });
+  next();
+}
+
+UserSchema.pre("find", autoPopulateTeamMember);
+UserSchema.pre("findOne", autoPopulateTeamMember);
 
 export const UserModel = mongoose.model('User', UserSchema);

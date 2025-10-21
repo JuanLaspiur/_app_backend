@@ -9,7 +9,7 @@ export class UserRoutes {
 
         const datasource = new UserDataSourceImpl(handleError);
         const authRepositoy = new UserRepositoryImpl(datasource);
-        const controller = new UserController(authRepositoy);
+        const controller = new UserController(authRepositoy, handleError);
 
         const router = Router();
         router.get('/getAll', controller.getAllUsers.bind(controller));

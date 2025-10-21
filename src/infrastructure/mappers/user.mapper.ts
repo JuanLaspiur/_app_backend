@@ -1,4 +1,4 @@
-import { CustomError, UserEntity, UserSession } from "../../domain";
+import { CustomError, UserEntity, UserSession, TeamMemberEntity } from "../../domain";
 
 export class UserMapper {
   static userEntityFromObject(object: { [key: string]: any }): UserEntity {
@@ -17,6 +17,7 @@ export class UserMapper {
       session,
       jobTitle,
       location,
+      teamMember, // 🔹 nuevo campo
       createdAt,
       updatedAt
     } = object;
@@ -52,13 +53,33 @@ export class UserMapper {
       };
     }
 
+    // 🔹 Mapear teamMember si viene populado
+    let teamMemberEntity: TeamMemberEntity | string | undefined;
+    if (teamMember) {
+      if (typeof teamMember === "object") {
+        teamMemberEntity = new TeamMemberEntity(
+          teamMember.id?.toString() || teamMember._id?.toString(),
+          teamMember.userId,
+          teamMember.position,
+          teamMember.roleLevel,
+          teamMember.salary,
+          teamMember.jobDescription,
+          teamMember.startDate ? new Date(teamMember.startDate) : new Date(),
+          teamMember.createdAt ? new Date(teamMember.createdAt) : new Date(),
+          teamMember.updatedAt ? new Date(teamMember.updatedAt) : new Date()
+        );
+      } else {
+        teamMemberEntity = teamMember.toString();
+      }
+    }
+
     return new UserEntity(
       userId,
       firstName,
       lastName,
       email,
       password,
-      role || 'user',
+      role || "user",
       username,
       phone,
       isActive,
@@ -66,12 +87,13 @@ export class UserMapper {
       userSession,
       jobTitle,
       location,
+      teamMemberEntity, // ✅ agregado aquí
       createdAt ? new Date(createdAt) : new Date(),
       updatedAt ? new Date(updatedAt) : new Date()
     );
   }
 
-    static toEntities(objects: any[]): UserEntity[] {
-    return objects.map(obj => this.userEntityFromObject(obj));
+  static toEntities(objects: any[]): UserEntity[] {
+    return objects.map((obj) => this.userEntityFromObject(obj));
   }
 }

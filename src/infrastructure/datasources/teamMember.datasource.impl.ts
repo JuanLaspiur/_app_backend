@@ -1,8 +1,7 @@
 import { TeamMemberDataSource, TeamMemberEntity } from "../../domain";
 import { TeamMemberMapper } from "../mappers/teamMember.mapper";
-import { CustomError } from "../../domain";
 import { CreateTeamMemberDto, jwtDto, UpdateTeamMemberDto } from "../../domain/dtos";
-import { TeamMemberModel } from "../../data/mogodb/models/teamMember";
+import { TeamMemberModel, UserModel } from "../../data/mogodb/";
 
 export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
     constructor(
@@ -15,11 +14,20 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
         try {
             this.verifyToken(dto);
             const teamMember = await TeamMemberModel.create(createTeamMemberDto);
+
+            if (createTeamMemberDto.userId) {
+                await UserModel.findByIdAndUpdate(
+                    createTeamMemberDto.userId,
+                    { teamMember: teamMember.id },
+                    { new: true }
+                );
+            }
             return TeamMemberMapper.toEntity(teamMember);
         } catch (error) {
             this.handleError(error);
         }
     }
+
     async getUserTeamMember(dto: jwtDto): Promise<TeamMemberEntity | null> {
         try {
             const userId = this.verifyToken(dto);

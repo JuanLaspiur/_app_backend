@@ -42,7 +42,7 @@ export const TeamMemberSchema = new Schema(
     },
   }
 );
-
+/*
 function autoPopulateRefs(this: Query<any, any>, next: () => void) {
   this.populate({
     path: "userId",
@@ -53,5 +53,5 @@ function autoPopulateRefs(this: Query<any, any>, next: () => void) {
 
 TeamMemberSchema.pre("find", autoPopulateRefs);
 TeamMemberSchema.pre("findOne", autoPopulateRefs);
-
+*/
 export const TeamMemberModel = mongoose.model("TeamMember", TeamMemberSchema);

@@ -16,7 +16,7 @@ const SessionSchema = new Schema(
     },
   },
   {
-    _id: false, 
+    _id: false,
   }
 );
 const UserSchema = new Schema(
@@ -56,12 +56,16 @@ const UserSchema = new Schema(
     },
     isActive: {
       type: Boolean,
-      default: true,
+      default: false,
+    },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
     },
     avatarUrl: {
       type: String,
     },
-    session: SessionSchema, 
+    session: SessionSchema,
     jobTitle: {
       type: String,
     },
@@ -92,8 +96,8 @@ UserSchema.set('toJSON', {
 
 function autoPopulateTeamMember(this: Query<any, any>, next: () => void) {
   this.populate({
-        path: 'teamMember', 
-        select: '-userId',
+    path: 'teamMember',
+    select: '-userId',
   });
   next();
 }

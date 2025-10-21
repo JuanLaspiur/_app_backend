@@ -13,11 +13,12 @@ export class UserMapper {
       username,
       phone,
       isActive = true,
+      isEmailVerified = false, 
       avatarUrl,
       session,
       jobTitle,
       location,
-      teamMember, // 🔹 nuevo campo
+      teamMember,
       createdAt,
       updatedAt
     } = object;
@@ -53,7 +54,7 @@ export class UserMapper {
       };
     }
 
-    // 🔹 Mapear teamMember si viene populado
+    // Mapear teamMember si viene populado
     let teamMemberEntity: TeamMemberEntity | string | undefined;
     if (teamMember) {
       if (typeof teamMember === "object") {
@@ -83,11 +84,12 @@ export class UserMapper {
       username,
       phone,
       isActive,
+      isEmailVerified, 
       avatarUrl,
       userSession,
       jobTitle,
       location,
-      teamMemberEntity, // ✅ agregado aquí
+      teamMemberEntity,
       createdAt ? new Date(createdAt) : new Date(),
       updatedAt ? new Date(updatedAt) : new Date()
     );

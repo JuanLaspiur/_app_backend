@@ -17,6 +17,7 @@ export class UserEntity {
     public username?: string,
     public phone?: string,
     public isActive: boolean = true,
+    public isEmailVerified: boolean = false,
     public avatarUrl?: string,
     public session?: UserSession,
     public jobTitle?: string,

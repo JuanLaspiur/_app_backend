@@ -10,6 +10,7 @@ import { WorkScheduleRoutes } from "./workSchedule/routes";
 import { WorkDayLogRoutes } from "./workLog/routes";
 import { DepartmentRoutes } from "./departament/routes";
 import { TeamRoutes } from "./team/routes";
+import { TeamMemberRoutes } from "./teamMember/routes";
 
 export class AppRoutes {
     static get routes(): Router {
@@ -25,6 +26,8 @@ export class AppRoutes {
         router.use('/api/workDayLogs', WorkDayLogRoutes.routes);
         router.use('/api/departments', DepartmentRoutes.routes);
         router.use('/api/teams', TeamRoutes.routes);
+        router.use('/api/teamMembers', TeamMemberRoutes.routes);
+
         return router;
     }
 }

@@ -2,7 +2,7 @@ import mongoose, { Query, Schema } from "mongoose";
 
 export const TeamSchema = new Schema({
   name: { type: String, required: true },
-  members: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  members: [{ type: Schema.Types.ObjectId, ref: "User" }], 
 }, {
   timestamps: true,
   toJSON: {

@@ -51,6 +51,10 @@ export * from "./team/updateTeam.dto";
 export * from "./team/addMember.dto";
 export * from "./team/removeMember.dto";
 
+// teamMember 
+export * from "./teamMember/createTeamMemberf.dto";
+export * from "./teamMember/updateTeamMember.dto";
+
 
 // JWT DTO 
 export * from './jwt.dto';

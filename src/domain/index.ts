@@ -7,9 +7,9 @@ export * from './entities/calendarTask.entity';
 export * from './entities/pushNotification.entity';
 export * from './entities/workSchedule.entity';
 export * from './entities/workDayLog.entity'; 
-//
 export * from './entities/department.entity';
 export * from './entities/team.entity';
+export * from './entities/teamMember.entity';
 
 
 // error
@@ -26,9 +26,9 @@ export * from './datasources/calendarTask.datasource';
 export * from './datasources/pushNotification.datasource';
 export * from './datasources/workSchedule.datasource';
 export * from './datasources/workDayLog.datasource'; 
-
 export * from './datasources/departament.datasource';
 export * from './datasources/team.datasource';
+export * from './datasources/teamMember.datasource';
 
 
 // repository
@@ -41,6 +41,6 @@ export * from './repository/calendarTask.repository';
 export * from './repository/pushnotification.repository';
 export * from './repository/workSchedule.repository';
 export * from './repository/workDayLog.repository'; 
-
 export * from './repository/departament.repository';
 export * from './repository/team.repository';
+export * from './repository/teamMember.repository';

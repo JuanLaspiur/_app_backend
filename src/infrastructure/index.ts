@@ -10,6 +10,7 @@ export * from './datasources/workSchedule.datasource.impl';
 export * from './datasources/workDayLog.datasource.impl';
 export * from './datasources/departament.datasource.impl';
 export * from './datasources/team.datasource.impl';
+export * from './datasources/teamMember.datasource.impl';
 
 
 // repositories
@@ -24,6 +25,8 @@ export * from './repository/workSchedule.repository.impl';
 export * from './repository/workDayLog.repository.impl';
 export * from './repository/departament.repository.impl';
 export * from './repository/team.repository.impl';
+export * from './repository/teamMember.repository.impl';
+
 
 // mappers
 export * from './mappers/user.mapper';
@@ -36,3 +39,4 @@ export * from './mappers/workSchedule.mapper';
 export * from './mappers/workDayLog.mapper';
 export * from './mappers/departament.mapper';
 export * from './mappers/team.mapper';
+export * from './mappers/teamMember.mapper';

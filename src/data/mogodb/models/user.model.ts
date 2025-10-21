@@ -1,4 +1,5 @@
 import mongoose, { Query, Schema } from 'mongoose';
+import { TeamMemberModel } from './teamMember';
 
 const SessionSchema = new Schema(
   {
@@ -101,8 +102,14 @@ function autoPopulateTeamMember(this: Query<any, any>, next: () => void) {
   });
   next();
 }
-
+async function deleteAssociatedTeamMember(doc: any) {
+  if (doc?.teamMember) {
+    await TeamMemberModel.findByIdAndDelete(doc.teamMember);
+  }
+}
 UserSchema.pre("find", autoPopulateTeamMember);
 UserSchema.pre("findOne", autoPopulateTeamMember);
+UserSchema.post("findOneAndDelete", deleteAssociatedTeamMember);
+UserSchema.post("deleteOne", { document: true, query: false }, deleteAssociatedTeamMember);
 
 export const UserModel = mongoose.model('User', UserSchema);

@@ -1,4 +1,5 @@
-import mongoose, { Query, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import { UserModel } from "./user.model"; 
 
 export const TeamMemberSchema = new Schema(
   {
@@ -17,7 +18,6 @@ export const TeamMemberSchema = new Schema(
     },
     jobDescription: {
       type: String,
-      required: false,
     },
     salary: {
       type: Number,
@@ -27,11 +27,11 @@ export const TeamMemberSchema = new Schema(
     startDate: {
       type: Date,
       required: true,
-      default: Date.now, 
+      default: Date.now,
     },
   },
   {
-    timestamps: true,
+    timestamps: false,
     toJSON: {
       virtuals: true,
       versionKey: false,
@@ -42,16 +42,17 @@ export const TeamMemberSchema = new Schema(
     },
   }
 );
-/*
-function autoPopulateRefs(this: Query<any, any>, next: () => void) {
-  this.populate({
-    path: "userId",
-    select: "-password -session",
-  });
-  next();
-}
 
-TeamMemberSchema.pre("find", autoPopulateRefs);
-TeamMemberSchema.pre("findOne", autoPopulateRefs);
-*/
+TeamMemberSchema.post("findOneAndDelete", async function (doc) {
+  if (doc?.userId) {
+    await UserModel.findByIdAndUpdate(doc.userId, { $unset: { teamMember: "" } });
+  }
+});
+
+TeamMemberSchema.post("deleteOne", { document: true, query: false }, async function (doc) {
+  if (doc?.userId) {
+    await UserModel.findByIdAndUpdate(doc.userId, { $unset: { teamMember: "" } });
+  }
+});
+
 export const TeamMemberModel = mongoose.model("TeamMember", TeamMemberSchema);

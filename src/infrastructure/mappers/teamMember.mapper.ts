@@ -11,9 +11,7 @@ export class TeamMemberMapper {
             doc.roleLevel,
             doc.salary,
             doc.jobDescription,
-            doc.startDate ? new Date(doc.startDate) : new Date(),
-            doc.createdAt ? new Date(doc.createdAt) : new Date(),
-            doc.updatedAt ? new Date(doc.updatedAt) : new Date()
+            doc.startDate ? new Date(doc.startDate) : new Date()
         );
 
     }

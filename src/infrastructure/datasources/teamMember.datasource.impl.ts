@@ -13,12 +13,17 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
     async createTeamMember(dto: jwtDto, createTeamMemberDto: CreateTeamMemberDto): Promise<TeamMemberEntity> {
         try {
             this.verifyToken(dto);
+            if (createTeamMemberDto.userId) {
+                const existingTeamMember = await TeamMemberModel.findOne({ userId: createTeamMemberDto.userId });
+                if (existingTeamMember) {
+                    await TeamMemberModel.findByIdAndDelete(existingTeamMember._id);
+                }
+            }
             const teamMember = await TeamMemberModel.create(createTeamMemberDto);
-
             if (createTeamMemberDto.userId) {
                 await UserModel.findByIdAndUpdate(
                     createTeamMemberDto.userId,
-                    { teamMember: teamMember.id },
+                    { teamMember: teamMember._id },
                     { new: true }
                 );
             }
@@ -56,7 +61,6 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
     async deleteTeamMember(dto: jwtDto, teamMemberId: string): Promise<boolean> {
         try {
             this.verifyToken(dto);
-
             const result = await TeamMemberModel.findByIdAndDelete(teamMemberId);
             return !!result;
         } catch (error) {

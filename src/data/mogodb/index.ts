@@ -5,3 +5,5 @@ export * from './models/notification.model';
 export * from './models/pushNotification.model';
 export * from './models/workSchedule.model';
 export * from './models/workDayLog.model';
+export * from './models/department.model';
+export * from './models/team.model';

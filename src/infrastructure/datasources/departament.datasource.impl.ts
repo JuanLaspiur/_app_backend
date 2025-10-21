@@ -1,14 +1,14 @@
 import { DepartmentDataSource, DepartmentEntity } from "../../domain";
 import { jwtDto, CreateDepartmentDto, UpdateDepartmentDto } from "../../domain/dtos";
 import { CustomError } from "../../domain";
-import { DepartmentModel } from "../../data/mogodb/models/department.model";
+import { UserModel, DepartmentModel } from "../../data/mogodb";
 import { DepartamentMapper } from "../mappers/departament.mapper";
 
 export class DepartmentDataSourceImpl implements DepartmentDataSource {
   constructor(
     private readonly verifyToken: (dto: jwtDto) => string,
     private readonly handleError: (error: unknown) => never
-  ) {}
+  ) { }
 
   async createDepartment(dto: jwtDto, createDepartmentDto: CreateDepartmentDto): Promise<DepartmentEntity> {
     try {
@@ -27,8 +27,20 @@ export class DepartmentDataSourceImpl implements DepartmentDataSource {
   async getAllDepartments(dto: jwtDto): Promise<DepartmentEntity[]> {
     try {
       this.verifyToken(dto);
-      const docs = await DepartmentModel.find();
-      return docs.map(DepartamentMapper.toEntity);
+
+      const docs = await DepartmentModel.find()
+        .populate({
+          path: "manager",
+          model: UserModel,
+          select: "-password -session",
+        
+        })
+        .populate({
+          path: "teams",
+        })
+        .exec();
+
+      return DepartamentMapper.toEntitiesWithManagerPopulate(docs);
     } catch (error) {
       this.handleError(error);
     }

@@ -5,7 +5,7 @@ const DepartmentSchema = new Schema(
     {
         name: { type: String, required: true },
         manager: { type: String, required: true },
-        location: { type: String },
+        location: { type: String, required: true, default:' - '   },
         teams: [TeamSchema],
     },
     {

@@ -12,7 +12,7 @@ export class CreateDepartmentDto {
 
 if (!name) return ["The department name ('name') is required"];
 if (!manager) return ["The manager ('manager') is required"];
-
+if (!location) return ["The location ('location') is required"];
 
     return [
       undefined,

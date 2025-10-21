@@ -1,7 +1,7 @@
 import { TeamDataSource, TeamEntity } from "../../domain";
 import { jwtDto, CreateTeamDto, UpdateTeamDto } from "../../domain/dtos";
 import { TeamMapper } from "../mappers/team.mapper";
-import { TeamModel } from "../../data/mogodb/models/team.model"; // tu modelo mongoose
+import { TeamModel, DepartmentModel } from "../../data/mogodb"; // tu modelo mongoose
 import { CustomError } from "../../domain";
 
 export class TeamDataSourceImpl implements TeamDataSource {
@@ -10,19 +10,26 @@ export class TeamDataSourceImpl implements TeamDataSource {
     private readonly handleError: (error: unknown) => never
   ) {}
 
-  async createTeam(dto: jwtDto, createTeamDto: CreateTeamDto): Promise<TeamEntity> {
-    try {
-      this.verifyToken(dto);
+async createTeam(dto: jwtDto, createTeamDto: CreateTeamDto): Promise<TeamEntity> {
+  try {
+    this.verifyToken(dto);
 
-      const [error, validDto] = CreateTeamDto.create(createTeamDto);
-      if (error || !validDto) throw CustomError.badRequest(error ?? "Invalid team data");
+   const { departmentId, ...createDto } = createTeamDto;
 
-      const doc = await TeamModel.create(validDto);
-      return TeamMapper.toEntity(doc);
-    } catch (error) {
-      this.handleError(error);
-    }
+
+    const department = await DepartmentModel.findById(departmentId);
+    if (!department) throw CustomError.notFound("Department not found");
+
+    const teamDoc = await TeamModel.create({
+      ...createDto,
+    });
+    department.teams.push(teamDoc); 
+    await department.save();
+    return TeamMapper.toEntity(teamDoc);
+  } catch (error) {
+    this.handleError(error);
   }
+}
 
   async getAllTeams(dto: jwtDto): Promise<TeamEntity[]> {
     try {

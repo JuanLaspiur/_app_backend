@@ -11,7 +11,9 @@ export class TeamController {
 
     async createTeam(req: Request, res: Response) {
         try {
-            const [errorTeam, createTeamDto] = CreateTeamDto.create(req.body);
+            const data = req.body;
+            const departmentId = req.params.departmentId;
+            const [errorTeam, createTeamDto] = CreateTeamDto.create({departmentId,...data});
             if (errorTeam || !createTeamDto) throw CustomError.badRequest(errorTeam ? errorTeam : 'Error create team body info');
 
             const authHeader = req.headers.authorization;

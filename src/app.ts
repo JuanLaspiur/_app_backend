@@ -1,7 +1,7 @@
-import "dotenv/config";
 import { Server } from "./presentation/server";
 import { AppRoutes } from "./presentation/routes";
 import { MongoDataBase } from "./data/mogodb";
+import { envs } from "./config/env";
 
 (() => {
   main();
@@ -9,11 +9,11 @@ import { MongoDataBase } from "./data/mogodb";
 
 async function main() {
   await MongoDataBase.connect({
-    dbName: process.env.MONGO_DB_NAME!,
-    mongoUrl: process.env.MONGO_URL!,
+    dbName: envs.MONGO_DB_NAME!,
+    mongoUrl: envs.MONGO_URL!,
   });
 
-  const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+  const port = envs.PORT ? envs.PORT: 3000;
   const server = new Server(port, AppRoutes.routes);
 
   server.start();

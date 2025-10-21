@@ -1,23 +1,24 @@
 import nodemailer from "nodemailer";
+import { envs } from "./env";
 
 export class NodemailerAdapter {
   private transporter: nodemailer.Transporter;
 
   constructor() {
     this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT || 587),
-      secure: Number(process.env.SMTP_PORT) === 465,
+      host: envs.SMTP_HOST,
+      port: envs.SMTP_PORT || 587,
+      secure: envs.SMTP_PORT === 465,
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
+        user: envs.SMTP_USER,
+        pass: envs.SMTP_PASSWORD,
       },
     });
   }
 
   async sendEmail(to: string, subject: string, text?: string, html?: string): Promise<void> {
     await this.transporter.sendMail({
-      from: `"${process.env.EMAIL_FROM_NAME || "My App"}" <${process.env.SMTP_USER}>`,
+      from: `"${envs.EMAIL_FROM_NAME || "My App"}" <${envs.SMTP_USER}>`,
       to,
       subject,
       text,

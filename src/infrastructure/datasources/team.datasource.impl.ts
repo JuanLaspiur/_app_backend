@@ -1,7 +1,7 @@
 import { TeamDataSource, TeamEntity } from "../../domain";
 import { jwtDto, CreateTeamDto, UpdateTeamDto, AddMemberDto, RemoveMemberDto } from "../../domain/dtos";
 import { TeamMapper } from "../mappers/team.mapper";
-import { TeamModel, DepartmentModel, UserModel } from "../../data/mogodb";
+import { TeamModel, DepartmentModel, UserModel, TeamMemberModel } from "../../data/mogodb";
 import { CustomError } from "../../domain";
 
 export class TeamDataSourceImpl implements TeamDataSource {
@@ -69,16 +69,16 @@ export class TeamDataSourceImpl implements TeamDataSource {
   async addMember(dto: jwtDto, addMemberDto: AddMemberDto): Promise<TeamEntity | null> {
     try {
       this.verifyToken(dto);
-      const { teamId, userId } = addMemberDto;
+      const { teamId, teamMemberId } = addMemberDto;
 
-      const user = await UserModel.findById(userId);
-      if (!user) throw CustomError.notFound("User not found");
+      const member = await TeamMemberModel.findById(teamMemberId);
+      if (!member) throw CustomError.notFound("TeamMember not found");
 
       const teamDoc = await TeamModel.findByIdAndUpdate(
         teamId,
-        { $addToSet: { members: userId } }, 
+        { $addToSet: { members: teamMemberId } }, 
         { new: true }
-      ).populate({ path: "members", select: "-password -session" });
+      );
 
       return teamDoc ? TeamMapper.toEntity(teamDoc) : null;
     } catch (error) {
@@ -90,13 +90,13 @@ export class TeamDataSourceImpl implements TeamDataSource {
     try {
       this.verifyToken(dto);
 
-      const { teamId, userId } = removeMemberDto;
+      const { teamId, teamMemberId } = removeMemberDto;
 
       const teamDoc = await TeamModel.findByIdAndUpdate(
         teamId,
-        { $pull: { members: userId } },
+        { $pull: { members: teamMemberId } },
         { new: true }
-      ).populate({ path: "members", select: "-password -session" });
+      );
 
       return teamDoc ? TeamMapper.toEntity(teamDoc) : null;
     } catch (error) {

@@ -96,12 +96,18 @@ UserSchema.set('toJSON', {
 });
 
 function autoPopulateTeamMember(this: Query<any, any>, next: () => void) {
+  const opts = (this as any).getOptions?.() as Record<string, any> | undefined;
+  if (opts && opts.autopopulate === false) {
+    return next();
+  }
   this.populate({
     path: 'teamMember',
     select: '-userId',
   });
+
   next();
 }
+
 async function deleteAssociatedTeamMember(doc: any) {
   if (doc?.teamMember) {
     await TeamMemberModel.findByIdAndDelete(doc.teamMember);

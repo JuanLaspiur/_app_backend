@@ -1,27 +1,42 @@
 import mongoose, { Query, Schema } from "mongoose";
 
-export const TeamSchema = new Schema({
-  name: { type: String, required: true },
-  members: [{ type: Schema.Types.ObjectId, ref: "User" }], 
-}, {
-  timestamps: true,
-  toJSON: {
-    virtuals: true,
-    versionKey: false,
-    transform: (_doc, ret: any) => {
-      ret.id = ret._id.toString();
-      delete ret._id;
-    },
+export const TeamSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    members: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "TeamMember",
+      },
+    ],
   },
-});
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      versionKey: false,
+      transform: (_doc, ret: any) => {
+        ret.id = ret._id.toString();
+        delete ret._id;
+      },
+    },
+  }
+);
 
 function autoPopulateMembers(this: Query<any, any>, next: () => void) {
   this.populate({
     path: "members",
-    select: "-password -session",
+    select: "-__v",
+    populate: {
+      path: "userId",
+      select: "firstName lastName email avatarUrl phone", // sigue apareciendo teamMember
+     options: { autopopulate: false },
+    },
   });
   next();
 }
+
+
 
 TeamSchema.pre("find", autoPopulateMembers);
 TeamSchema.pre("findOne", autoPopulateMembers);

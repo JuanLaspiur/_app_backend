@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
+import { envs } from './env';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecret';
+const JWT_SECRET = envs.JWT_SECRET || 'supersecret';
 const JWT_EXPIRES_IN = '1d'; // 1 día, puedes cambiarlo
 
 export const JwtAdapter = {

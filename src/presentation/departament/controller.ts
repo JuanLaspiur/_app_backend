@@ -32,10 +32,11 @@ export class DepartmentController {
             const authHeader = req.headers.authorization;
             if (!authHeader) throw CustomError.unauthorized('unauthorized');
             const [errorJwt, dto] = jwtDto.create({ token: authHeader });
+            
             if (errorJwt || !dto) throw CustomError.unauthorized(errorJwt ? errorJwt : 'Unauthorized');
 
-            const teams = await this.departmentRepository.getAllDepartments(dto);
-            return res.status(201).json(teams);
+            const departaments = await this.departmentRepository.getAllDepartments(dto);
+            return res.status(201).json(departaments);
         } catch (error) {
             this.handleError(error, res);
         }

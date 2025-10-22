@@ -1,11 +1,11 @@
 import { EmailService } from "./email.service";
 import { NodemailerAdapter } from "../../config/email.pluggin";
+import { envs } from "../../config/env";
 let adapter: any;
 
-const provider = (process.env.EMAIL_PROVIDER || "nodemailer").toLowerCase();
+const provider = (envs.EMAIL_PROVIDER || "nodemailer").toLowerCase();
 
 if (provider === "sendgrid") {
-  // lazy require so package optional
   const { SendgridAdapter } = require("../adapters/sendgrid.adapter");
   adapter = new SendgridAdapter();
 } else {

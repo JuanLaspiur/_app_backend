@@ -1,3 +1,5 @@
+import { envs } from "../../config/env";
+
 export class EmailService {
   constructor(private adapter: any) {}
 
@@ -6,7 +8,7 @@ export class EmailService {
   }
 
   async sendVerificationEmail(to: string, token: string): Promise<void> {
-    const link = `${process.env.APP_URL}/verify-email?token=${encodeURIComponent(token)}`;
+    const link = `${envs.APP_URL}/verify-email?token=${encodeURIComponent(token)}`;
     const html = `<p>Please verify your email by clicking <a href="${link}">this link</a>.</p>`;
     const text = `Verify your email: ${link}`;
     return this.sendEmail(to, "Verify your email", text, html);

@@ -71,7 +71,7 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
     async getAllTeamMembers(dto: jwtDto): Promise<TeamMemberEntity[]> {
         try {
             this.verifyToken(dto);
-            const docs = await TeamMemberModel.find();
+            const docs = await TeamMemberModel.find().populate({path:"userId", select:'-password -session'});
             return TeamMemberMapper.toEntities(docs);
         } catch (error) {
             this.handleError(error);

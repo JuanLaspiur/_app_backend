@@ -32,7 +32,7 @@ export class DepartmentController {
             const authHeader = req.headers.authorization;
             if (!authHeader) throw CustomError.unauthorized('unauthorized');
             const [errorJwt, dto] = jwtDto.create({ token: authHeader });
-            
+
             if (errorJwt || !dto) throw CustomError.unauthorized(errorJwt ? errorJwt : 'Unauthorized');
 
             const departaments = await this.departmentRepository.getAllDepartments(dto);
@@ -54,8 +54,8 @@ export class DepartmentController {
 
             const [errorJwt, dto] = jwtDto.create({ token: authHeader });
             if (errorJwt || !dto) throw CustomError.unauthorized(errorJwt ? errorJwt : 'Unauthorized');
-            const note = await this.departmentRepository.updateDepartment(dto, updateDepartmentDto);
-            return res.status(201).json(note);
+            const departament = await this.departmentRepository.updateDepartment(dto, updateDepartmentDto);
+            return res.status(201).json(departament);
 
         } catch (error) {
             this.handleError(error, res);
@@ -69,7 +69,8 @@ export class DepartmentController {
             if (!authHeader) throw CustomError.unauthorized('unauthorized');
             const [errorJwt, dto] = jwtDto.create({ token: authHeader });
             if (errorJwt || !dto) throw CustomError.unauthorized(errorJwt ? errorJwt : 'Unauthorized');
-            const note = await this.departmentRepository.deleteDepartment(dto, departmentId);
+            const departament = await this.departmentRepository.deleteDepartment(dto, departmentId);
+            return res.status(201).json(departament);
         } catch (error) {
             this.handleError(error, res);
         }

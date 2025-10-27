@@ -15,7 +15,7 @@ export async function processImage(file: Express.Multer.File, userId? : string) 
   return {
     originalName: file.originalname,
     filename: filenameWebp,
-    url: `/uploads/${filenameWebp}`,
+    url: `/public/uploads/${filenameWebp}`,
     size: fs.statSync(webpPath).size,
     mimetype: "image/webp",
   };

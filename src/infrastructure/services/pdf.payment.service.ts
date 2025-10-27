@@ -25,8 +25,8 @@ export interface PaymentInfo {
 }
 
 export class PdfPaymentService {
-  private readonly invoicesDir = path.join(__dirname, "../../invoices");
-  private readonly logoPath = path.join(__dirname, "../../../public/icon.png");
+ private readonly invoicesDir = path.join(process.cwd(), "public/invoices");
+  private readonly logoPath = path.join(__dirname, "../../../public/icon.png"); 
 
   private readonly layout = {
     margin: 40,
@@ -91,7 +91,6 @@ export class PdfPaymentService {
       try {
         doc.image(this.logoPath, x, y, { width });
       } catch {
-        /* ignore invalid image */
       }
     }
   }

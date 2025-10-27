@@ -1,6 +1,6 @@
 import express, { Application, Router } from "express";
 import path from "path";
-import cors from "cors"; // << agregar import de cors
+import cors from "cors";
 
 export class Server {
   private readonly port: number;
@@ -15,13 +15,13 @@ export class Server {
   }
 
   private middlewares(): void {
-  
+
     this.app.use(cors());  // TO DO usar patron adaptador y cerrar en producción
- 
+
 
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
-    this.app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+    this.app.use('/uploads', express.static(path.join(process.cwd(), 'public', 'uploads')));
     this.app.use(this.routes);
   }
 

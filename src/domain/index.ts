@@ -10,6 +10,7 @@ export * from './entities/workDayLog.entity';
 export * from './entities/department.entity';
 export * from './entities/team.entity';
 export * from './entities/teamMember.entity';
+export * from './entities/payment.entity';
 
 
 // error
@@ -29,6 +30,7 @@ export * from './datasources/workDayLog.datasource';
 export * from './datasources/departament.datasource';
 export * from './datasources/team.datasource';
 export * from './datasources/teamMember.datasource';
+export * from './datasources/payment.datasource';
 
 
 // repository
@@ -44,3 +46,4 @@ export * from './repository/workDayLog.repository';
 export * from './repository/departament.repository';
 export * from './repository/team.repository';
 export * from './repository/teamMember.repository';
+export * from './repository/payment.repository';

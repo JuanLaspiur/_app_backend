@@ -20,14 +20,7 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
                 }
             }
             const teamMember = await TeamMemberModel.create(createTeamMemberDto);
-            if (createTeamMemberDto.userId) {
-                await UserModel.findByIdAndUpdate(
-                    createTeamMemberDto.userId,
-                    { teamMember: teamMember._id },
-                    { new: true }
-                );
-            }
-            return TeamMemberMapper.toEntity(teamMember);
+             return TeamMemberMapper.toEntity(teamMember);
         } catch (error) {
             this.handleError(error);
         }

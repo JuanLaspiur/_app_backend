@@ -11,6 +11,7 @@ import { WorkDayLogRoutes } from "./workLog/routes";
 import { DepartmentRoutes } from "./departament/routes";
 import { TeamRoutes } from "./team/routes";
 import { TeamMemberRoutes } from "./teamMember/routes";
+import { PaymentRoutes } from "./payment/routes";
 
 export class AppRoutes {
     static get routes(): Router {
@@ -27,6 +28,7 @@ export class AppRoutes {
         router.use('/api/departments', DepartmentRoutes.routes);
         router.use('/api/teams', TeamRoutes.routes);
         router.use('/api/teamMembers', TeamMemberRoutes.routes);
+        router.use('/api/payments', PaymentRoutes.routes);
 
         return router;
     }

@@ -55,6 +55,10 @@ export * from "./team/removeMember.dto";
 export * from "./teamMember/createTeamMemberf.dto";
 export * from "./teamMember/updateTeamMember.dto";
 
+// payment
+export * from "./payment/createPayment.dto";
+export * from "./payment/updatePayment.dto";
+
 
 // JWT DTO 
 export * from './jwt.dto';

@@ -10,9 +10,16 @@ export class UpdateTeamDto {
 
     if (!id) return ["El ID del team es obligatorio para actualizar"];
 
+   const uniqueMembers: string[] | undefined = members
+      ? Array.from(
+          new Set<string>(
+            members.filter((m:string): m is string => typeof m === "string" && m.trim() !== "")
+          )
+        )
+      : undefined;
     return [
       undefined,
-      new UpdateTeamDto(id, name, members),
+      new UpdateTeamDto(id, name, uniqueMembers),
     ];
   }
 }

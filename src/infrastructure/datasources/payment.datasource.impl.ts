@@ -12,40 +12,26 @@ export class PaymentDataSourceImpl implements PaymentDataSource {
 
   }
 
-async createPayment(dto: jwtDto, createPaymentDto: CreatePaymentDto): Promise<PaymentEntity> {
-  try {
-    this.verifyToken(dto);
-    const payment = await PaymentModel.create(createPaymentDto);
-    const entity = PaymentMapper.toEntity(payment);
-
+  async createPayment(dto: jwtDto, createPaymentDto: CreatePaymentDto): Promise<PaymentEntity> {
     try {
+      this.verifyToken(dto);
+      const payment = await PaymentModel.create(createPaymentDto);
+      const entity = PaymentMapper.toEntity(payment);
       GeneratePaymentPdfUseCase.execute(entity);
-    } catch (pdfError) {
-      console.error("Error generating payment PDF:", pdfError);
+      const userEmail = typeof entity.userId === "object" ? entity.userId.email : null;
+      if (userEmail)
+      await SendSalaryNotificationUseCase.execute(userEmail, entity.amount, entity.date);
+      return entity;
+    } catch (error) {
+      this.handleError(error);
     }
-
-    const userEmail = typeof entity.userId === "object" ? entity.userId.email : null;
-    if (!userEmail) {
-      console.warn("User email not found, skipping salary notification");
-    } else {
-      try {
-        await SendSalaryNotificationUseCase.execute(userEmail, entity.amount, entity.date);
-      } catch (emailError) {
-        console.error("Error sending salary notification:", emailError);
-      }
-    }
-
-    return entity;
-  } catch (error) {
-    this.handleError(error);
   }
-}
 
 
   async getAllPayment(dto: jwtDto): Promise<PaymentEntity[]> {
     try {
       this.verifyToken(dto);
-      const payments = await PaymentModel.find().populate({path:'userId', select: "-session"});
+      const payments = await PaymentModel.find().populate({ path: 'userId', select: "-session" }).sort({ date: -1 });
       return PaymentMapper.toEntities(payments);
     } catch (error) {
       this.handleError(error);
@@ -55,7 +41,7 @@ async createPayment(dto: jwtDto, createPaymentDto: CreatePaymentDto): Promise<Pa
   async getOunAllPayment(dto: jwtDto): Promise<PaymentEntity[]> {
     try {
       const userId = this.verifyToken(dto);
-      const payments = await PaymentModel.find({ userId });
+      const payments = await PaymentModel.find({ userId }).sort({ date: -1 });;
       return PaymentMapper.toEntities(payments);
     } catch (error) {
       this.handleError(error);

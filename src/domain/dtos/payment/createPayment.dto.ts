@@ -20,7 +20,7 @@ export class CreatePaymentDto {
     if (method && !["Credit Card", "PayPal", "Bank Transfer", "Cash"].includes(method))
       return ["Invalid payment method"];
     if (status && !["Paid", "Pending", "Failed"].includes(status))
-      return ["Invalid payment status"];
+      return ["Invalid payment status (Failed, Pending, Paid ) "];
 
     const paymentDto = new CreatePaymentDto(
       userId,

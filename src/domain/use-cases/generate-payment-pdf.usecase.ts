@@ -1,4 +1,3 @@
-// application/use-cases/generate-payment-pdf.usecase.ts
 import { PdfPaymentService } from "../../infrastructure/services/pdf.payment.service";
 import { PaymentEntity } from "../../domain/entities/payment.entity";
 
@@ -17,25 +16,27 @@ export interface PaymentInfo {
 }
 
 export class GeneratePaymentPdfUseCase {
-  static execute(payment: PaymentEntity): void {
-    const pdfService = new PdfPaymentService();
+static execute(payment: PaymentEntity): void {
+  const pdfService = new PdfPaymentService();
+  const paymentDate = payment.date instanceof Date ? payment.date : new Date(payment.date);
 
-    const paymentInfo: PaymentInfo = {
-      invoiceNumber: payment.id,
-      invoiceDate: payment.date,
-      userName: `${typeof payment.userId === "object" ? payment.userId.firstName : ""} ${typeof payment.userId === "object" ? payment.userId.lastName : ""}`,
-      amount: payment.amount,
-      method: payment.method,
-      items: [
-        {
-          description: payment.description || "Pago",
-          quantity: 1,
-          unitPrice: payment.amount,
-          total: payment.amount,
-        },
-      ],
-    };
+  const paymentInfo: PaymentInfo = {
+    invoiceNumber: payment.id,
+    invoiceDate: paymentDate,
+    userName: `${typeof payment.userId === "object" ? payment.userId.firstName : ""} ${typeof payment.userId === "object" ? payment.userId.lastName : ""}`,
+    amount: payment.amount,
+    method: payment.method,
+    items: [
+      {
+        description: payment.description || "Pago",
+        quantity: 1,
+        unitPrice: payment.amount,
+        total: payment.amount,
+      },
+    ],
+  };
 
-    pdfService.generateInvoice(paymentInfo);
-  }
+  pdfService.generateInvoice(paymentInfo);
+}
+
 }

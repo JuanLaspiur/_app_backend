@@ -9,9 +9,10 @@ export class PaymentMapper {
             paymentDoc.userId,
             paymentDoc.amount,
             paymentDoc.method,
+            paymentDoc.date,
             paymentDoc.status,
             paymentDoc.description,
-            paymentDoc.date
+           
         );
     }
 

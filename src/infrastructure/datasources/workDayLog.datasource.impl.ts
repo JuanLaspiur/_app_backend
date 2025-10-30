@@ -1,7 +1,10 @@
 import { CustomError, WorkDayLogDataSource, WorkDayLogEntity } from "../../domain";
 import { CloseLogDto, jwtDto, OpenLogDto } from "../../domain/dtos";
-import { WorkDayLogModel, WorkScheduleModel, WorkDayStatus } from "../../data/mogodb";
+import { WorkDayStatus } from "../../data/mogodb";
 import { WorkDayLogMapper } from "../mappers/workDayLog.mapper";
+import { determineAttendanceStatus } from "../../config/helpers/status.helper";
+import * as workSheduleUseCase from '../../domain/use-cases/workSchedule'
+import * as workDayLogUseCase from "../../domain/use-cases/workDayLog";
 
 export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
 
@@ -10,32 +13,28 @@ export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
     private readonly handleError: (error: unknown) => never
   ) { }
 
-
-
-
-
-  async openLog(dto: jwtDto, openLogDto:OpenLogDto): Promise<WorkDayLogEntity> {
+  private authorize(dto: jwtDto) {
     const userId = this.verifyToken(dto);
+    if (!userId) throw CustomError.unauthorized("unauthorized: invalid authtoken");
+    return userId;
+  }
 
+  private async getLogById(logId: string) {
+    const useCase = new workDayLogUseCase.GetWorkDayLogByIdUseCase();
+    return useCase.execute(logId);
+  }
+
+  async openLog(dto: jwtDto, openLogDto: OpenLogDto): Promise<WorkDayLogEntity> {
     try {
-      if (!userId) throw CustomError.unauthorized("unauthorized: invalid authtoken");
+      this.authorize(dto);
 
-      const workdaylog = await WorkDayLogModel.findById(openLogDto.logId);
-      if (!workdaylog) throw CustomError.badRequest("Work day log not found");
+      const workdaylog = await this.getLogById(openLogDto.logId);
 
-      const workSchedule = await WorkScheduleModel.findById(workdaylog.scheduleId);
-      if (!workSchedule) throw CustomError.badRequest("Work schedule not found");
+      const scheduleUseCase = new workSheduleUseCase.GetWorkScheduleByIdUseCase();
+      const workSchedule = await scheduleUseCase.execute(workdaylog.scheduleId);
 
-      const [hours, minutes] = workSchedule.startTime.split(":").map(Number);
-      const scheduledStart = new Date();
-      scheduledStart.setHours(hours, minutes, 0, 0);
-
-      const now = new Date();
-      const diffMinutes = (now.getTime() - scheduledStart.getTime()) / (1000 * 60);
-
-      workdaylog.status = diffMinutes <= 15 ? WorkDayStatus.ATTENDED : WorkDayStatus.LATE;
-      workdaylog.checkIn = now;
-
+      workdaylog.status = determineAttendanceStatus(workSchedule.startTime);
+      workdaylog.checkIn = new Date();
       await workdaylog.save();
 
       return WorkDayLogMapper.toEntity(workdaylog);
@@ -45,16 +44,12 @@ export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
   }
 
   async closeLog(dto: jwtDto, closeLog: CloseLogDto): Promise<WorkDayLogEntity> {
-    const userId = this.verifyToken(dto);
     try {
-      if (!userId) throw CustomError.unauthorized("unauthorized: invalid authtoken");
+      this.authorize(dto);
 
-      const workdaylog = await WorkDayLogModel.findById(closeLog.logId);
-      if (!workdaylog) throw CustomError.badRequest("Work day log not found");
+      const workdaylog = await this.getLogById(closeLog.logId);
 
-      const now = new Date();
-      workdaylog.checkOut = now;
-
+      workdaylog.checkOut = new Date();
       await workdaylog.save();
 
       return WorkDayLogMapper.toEntity(workdaylog);
@@ -64,15 +59,11 @@ export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
   }
 
   async markAsAbsentLog(dto: jwtDto, logId: string): Promise<WorkDayLogEntity> {
-    const userId = this.verifyToken(dto);
     try {
-      if (!userId) throw CustomError.unauthorized("unauthorized: invalid authtoken");
+      this.authorize(dto);
 
-      const workdaylog = await WorkDayLogModel.findById(logId);
-      if (!workdaylog) throw CustomError.badRequest("Work day log not found");
-
+      const workdaylog = await this.getLogById(logId);
       workdaylog.status = WorkDayStatus.ABSENT;
-
       await workdaylog.save();
 
       return WorkDayLogMapper.toEntity(workdaylog);
@@ -82,54 +73,31 @@ export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
   }
 
   async getUserWorkWeekLogs(dto: jwtDto): Promise<WorkDayLogEntity[]> {
-    const userId = this.verifyToken(dto);
     try {
+      const userId = this.authorize(dto);
 
-      const workdaysLogs = await WorkDayLogModel.find({ userId })
-        .populate({
-          path: 'scheduleId',
-          model: 'Work_Schedule',
-          select: 'id userId day startTime endTime isWorkday',
-        })
-        .exec();
+      const useCase = new workDayLogUseCase.GetAllWorkDayLogsByUserIdUseCase();
+      const workdayLogs = await useCase.execute(userId);
 
-      return WorkDayLogMapper.toEntitiesWithPopulate(workdaysLogs);
+      return WorkDayLogMapper.toEntitiesWithPopulate(workdayLogs);
     } catch (error) {
       this.handleError(error);
     }
   }
 
-
   async getTodayWorkLog(dto: jwtDto): Promise<WorkDayLogEntity> {
-    const userId = this.verifyToken(dto);
-    if (!userId) throw CustomError.unauthorized("unauthorized: invalid authtoken");
-
     try {
-      // Nombre del día actual en inglés (igual que tu DaysOfWeekArray)
-      const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-      const todayName = daysOfWeek[new Date().getDay()];
+      const userId = this.authorize(dto);
 
-      // Traer el horario de hoy del usuario
-      const todaySchedule = await WorkScheduleModel.findOne({ userId, day: todayName }).exec();
-      if (!todaySchedule) throw CustomError.notFound(`No schedule found for today (${todayName})`);
+      const scheduleUseCase = new workSheduleUseCase.GetTodayWorkScheduleUseCase();
+      const todaySchedule = await scheduleUseCase.execute(userId);
 
-      // Traer el log asociado a ese schedule
-      const todayLog = await WorkDayLogModel.findOne({ scheduleId: todaySchedule.id }).populate({
-        path: 'scheduleId',
-        model: 'Work_Schedule',
-        select: 'id userId day startTime endTime isWorkday',
-      });
+      const logUseCase = new workSheduleUseCase.GetTodayWorkDayLogByScheduleUseCase();
+      const todayLog = await logUseCase.execute(todaySchedule.id);
 
-      if (!todayLog) throw CustomError.notFound(`No work log found for today's schedule`);
-
-      // Devolver mapeado a entidad
       return WorkDayLogMapper.toEntityWithPopulate(todayLog);
     } catch (error) {
       this.handleError(error);
     }
   }
-
-
-
-
 }

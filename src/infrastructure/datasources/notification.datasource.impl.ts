@@ -1,5 +1,5 @@
 import { NotificationModel } from "../../data/mogodb";
-import { NotificationDataSource, NotificationEntity } from "../../domain";
+import { CustomError, NotificationDataSource, NotificationEntity } from "../../domain";
 import { jwtDto, CreateNotificationDto, UpdateNotificationDto } from "../../domain/dtos";
 import { NotificationMapper } from "../mappers/notification.mapper";
 
@@ -29,7 +29,7 @@ export class NotificationDataSourceImpl implements NotificationDataSource {
   async updateNotification(id: string, dto: UpdateNotificationDto): Promise<NotificationEntity> {
     try {
       const doc = await NotificationModel.findByIdAndUpdate(id, dto, { new: true });
-      if (!doc) throw new Error(`Notification with id ${id} not found`);
+      if (!doc) throw CustomError.notFound(`Notification with id ${id} not found`);
 
       return NotificationMapper.toEntity(doc);
     } catch (error) {

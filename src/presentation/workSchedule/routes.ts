@@ -13,6 +13,7 @@ export class WorkScheduleRoutes {
         const router = Router();
         router.post('/create', controller.createWorkSchedule.bind(controller));
         router.put('/update/:id', controller.updateWorkSchedule.bind(controller));
+        router.get('/getAllByUserId/:userId', controller.getAllUserWorkShedulesByUserId.bind(controller))        
         router.get('/getAll', controller.getAllUserWorkSchedule.bind(controller));
         router.delete('/delete/:id', controller.deleteWorkSchedule.bind(controller));
         router.delete('/deleteAll', controller.deleteAllUserWorkSchedules.bind(controller));

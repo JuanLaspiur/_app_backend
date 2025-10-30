@@ -50,5 +50,4 @@ export * from './repository/payment.repository';
 
 
 // use-cases
-export * from './use-cases/generate-payment-pdf.usecase';
-export * from './use-cases/sendEmail.use-case';
+export * from './use-cases/';

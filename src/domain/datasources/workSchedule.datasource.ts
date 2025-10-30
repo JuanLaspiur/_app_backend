@@ -6,6 +6,7 @@ export abstract class WorkScheduleDataSource {
     abstract updateWorkShedule(updateDto:UpdateWorkScheduleDto ):Promise<WorkScheduleEntity>; 
     abstract deleteWorkShedule(workScheduleId:string):Promise<void>; 
     abstract deleteAllUserWorkShedules(dto:jwtDto):Promise<void>; 
+    abstract getAllUserWorkShedulesByUserId(dto:jwtDto, userId:string):Promise<WorkScheduleEntity[]>;
     abstract getAllUserWorkShedules(dto:jwtDto):Promise<WorkScheduleEntity[]>;
 
 }

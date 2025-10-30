@@ -1,7 +1,8 @@
 import { WorkScheduleDataSource, WorkScheduleEntity, CustomError } from "../../domain";
 import { jwtDto, CreateWorkScheduleDto, UpdateWorkScheduleDto } from "../../domain/dtos";
-import { WorkDayLogModel, WorkScheduleModel } from "../../data/mogodb";
+import { WorkDayLogModel } from "../../data/mogodb";
 import { WorkScheduleMapper } from "../mappers/workSchedule.mapper";
+import * as useCases from "../../domain/use-cases/workSchedule";
 
 export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
   constructor(
@@ -9,34 +10,25 @@ export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
     private readonly handleError: (error: unknown) => never
   ) { }
 
-  // TO DO ver tema de try catch
-async createWorkShedule(dto: jwtDto, createDto: CreateWorkScheduleDto): Promise<WorkScheduleEntity> {
-  const userId = this.verifyToken(dto);
-  if (!userId) throw CustomError.unauthorized('Error AuthToken');
 
-  const [error, validDto] = CreateWorkScheduleDto.create(createDto);
-  if (error || !validDto) throw CustomError.badRequest('Bad Request');
 
-  const doc = await WorkScheduleModel.findOneAndUpdate(
-    { userId, day: validDto.day }, 
-    { userId, ...validDto },       
-    { new: true, upsert: true }   
-  );
-
-  return WorkScheduleMapper.toEntity(doc);
-}
+  async createWorkShedule(dto: jwtDto, createDto: CreateWorkScheduleDto): Promise<WorkScheduleEntity> {
+    try {
+      const userId = this.verifyToken(dto);
+      if (!userId) throw CustomError.unauthorized('Error AuthToken');
+      const useCase = new useCases.CreateWorkScheduleUseCase();
+      const doc = await useCase.execute(userId, createDto);
+      return WorkScheduleMapper.toEntity(doc);
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
 
 
   async updateWorkShedule(updateDto: UpdateWorkScheduleDto): Promise<WorkScheduleEntity> {
     try {
-      const [error, validDto] = UpdateWorkScheduleDto.create(updateDto);
-      if (error || !validDto) throw CustomError.badRequest(error ?? "Invalid update data");
-
-      const updated = await WorkScheduleModel.findByIdAndUpdate(
-        validDto.id,
-        { ...validDto, updatedAt: new Date() },
-        { new: true }
-      );
+      const useCase = new useCases.UpdateWorkScheduleUseCase();
+      const updated = await useCase.execute(updateDto.id, updateDto);
 
       if (!updated) throw CustomError.notFound("Work schedule not found");
       return WorkScheduleMapper.toEntity(updated);
@@ -46,28 +38,47 @@ async createWorkShedule(dto: jwtDto, createDto: CreateWorkScheduleDto): Promise<
   }
 
   async deleteWorkShedule(workScheduleId: string): Promise<void> {
-    const deleted = await WorkScheduleModel.findByIdAndDelete(workScheduleId);
-    if (!deleted) throw CustomError.notFound("Work schedule not found");
+    try {
+      const useCase = new useCases.DeleteWorkScheduleUseCase();
+      await useCase.execute(workScheduleId);
+    } catch (error) {
+      this.handleError(error);
+    }
+
   }
 
   async deleteAllUserWorkShedules(dto: jwtDto): Promise<void> {
-    const userId = this.verifyToken(dto);
-    if (!userId) throw CustomError.unauthorized('Error AuthToken');
-    await WorkDayLogModel.deleteMany({ userId });
-    await WorkScheduleModel.deleteMany({ userId });
+    try {
+      const userId = this.verifyToken(dto);
+      if (!userId) throw CustomError.unauthorized('Error AuthToken');
+      await WorkDayLogModel.deleteMany({ userId });
+      const useCase = new useCases.DeleteAllUserWorkSchedulesUseCase();
+      await useCase.execute(userId);
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
 
   async getAllUserWorkShedules(dto: jwtDto): Promise<WorkScheduleEntity[]> {
     try {
       const userId = this.verifyToken(dto);
-
-      const docs = await WorkScheduleModel.find({ userId });
+      const useCase = new useCases.GetAllWorkSchedulesUseCase();
+      const docs = await useCase.execute(userId);
       return WorkScheduleMapper.toEntities(docs);
     } catch (error) {
       this.handleError(error);
     }
   }
-
+  async getAllUserWorkShedulesByUserId(dto: jwtDto, userId: string): Promise<WorkScheduleEntity[]> {
+    try {
+      if (!dto.token) throw CustomError.unauthorized('Error AuthToken');
+      const useCase = new useCases.GetAllWorkSchedulesUseCase();
+      const docs = await useCase.execute(userId);
+      return WorkScheduleMapper.toEntities(docs);
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
 
 }

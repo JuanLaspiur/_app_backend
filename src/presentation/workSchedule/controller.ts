@@ -55,6 +55,23 @@ export class WorkScheduleController {
       this.handleError(error, res);
     }
   }
+  async getAllUserWorkShedulesByUserId(req: Request, res: Response) {
+    try {
+      const token = req.headers.authorization;
+      if (!token) throw CustomError.badRequest("Missing token");
+
+      const [error, dto] = jwtDto.create({ token });
+      if (error || !dto) throw CustomError.unauthorized(`${error}`);
+
+      const userId = req.params.userId;
+
+      const schedules = await this.workScheduleRepository.getAllUserWorkShedulesByUserId(dto, userId);
+      return res.status(200).json(schedules);
+
+    } catch (error) {
+      this.handleError(error, res);
+    }
+  }
 
   async deleteWorkSchedule(req: Request, res: Response) {
     try {

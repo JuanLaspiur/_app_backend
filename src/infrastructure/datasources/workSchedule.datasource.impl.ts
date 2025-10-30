@@ -10,14 +10,19 @@ export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
     private readonly handleError: (error: unknown) => never
   ) { }
 
-
+    private authorize(dto: jwtDto) {
+        const userId = this.verifyToken(dto);
+        if (!userId) throw CustomError.unauthorized("unauthorized: invalid token");
+        return userId;
+    }
 
   async createWorkShedule(dto: jwtDto, createDto: CreateWorkScheduleDto): Promise<WorkScheduleEntity> {
     try {
-      const userId = this.verifyToken(dto);
-      if (!userId) throw CustomError.unauthorized('Error AuthToken');
+      const userId = this.authorize(dto);
+
       const useCase = new useCases.CreateWorkScheduleUseCase();
       const doc = await useCase.execute(userId, createDto);
+      
       return WorkScheduleMapper.toEntity(doc);
     } catch (error) {
       this.handleError(error);
@@ -49,8 +54,8 @@ export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
 
   async deleteAllUserWorkShedules(dto: jwtDto): Promise<void> {
     try {
-      const userId = this.verifyToken(dto);
-      if (!userId) throw CustomError.unauthorized('Error AuthToken');
+      const userId = this.authorize(dto);
+
       await WorkDayLogModel.deleteMany({ userId });
       const useCase = new useCases.DeleteAllUserWorkSchedulesUseCase();
       await useCase.execute(userId);
@@ -62,7 +67,8 @@ export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
 
   async getAllUserWorkShedules(dto: jwtDto): Promise<WorkScheduleEntity[]> {
     try {
-      const userId = this.verifyToken(dto);
+      const userId = this.authorize(dto);
+
       const useCase = new useCases.GetAllWorkSchedulesUseCase();
       const docs = await useCase.execute(userId);
       return WorkScheduleMapper.toEntities(docs);
@@ -72,7 +78,8 @@ export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
   }
   async getAllUserWorkShedulesByUserId(dto: jwtDto, userId: string): Promise<WorkScheduleEntity[]> {
     try {
-      if (!dto.token) throw CustomError.unauthorized('Error AuthToken');
+      this.authorize(dto)
+      
       const useCase = new useCases.GetAllWorkSchedulesUseCase();
       const docs = await useCase.execute(userId);
       return WorkScheduleMapper.toEntities(docs);

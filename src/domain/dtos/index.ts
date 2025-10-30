@@ -5,6 +5,7 @@ export * from './auth/UpdatePassword.dto';
 
 // user
 export * from './user/getUserById.dto';
+export * from './user/updateUser.dto';
 
 // vacation
 export * from './vacation/createVacation.dto';

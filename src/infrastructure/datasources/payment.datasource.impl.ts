@@ -21,10 +21,9 @@ export class PaymentDataSourceImpl implements PaymentDataSource {
     try {
       this.authorize(dto);
 
-      const useCase = new PaymentUseCases.CreatePaymentUseCase();
-      const payment = await useCase.execute(createPaymentDto);
-
+      const payment = await PaymentUseCases.Create.execute(createPaymentDto);
       const entity = PaymentMapper.toEntity(payment);
+
       GeneratePaymentPdfUseCase.execute(entity);
 
       const userEmail = typeof entity.userId === "object" ? entity.userId.email : null;
@@ -41,8 +40,7 @@ export class PaymentDataSourceImpl implements PaymentDataSource {
     try {
       this.authorize(dto);
 
-      const useCase = new PaymentUseCases.GetAllPaymentsUseCase();
-      const payments = await useCase.execute();
+      const payments = await PaymentUseCases.GetAll.execute();
 
       return PaymentMapper.toEntities(payments);
     } catch (error) {
@@ -53,10 +51,7 @@ export class PaymentDataSourceImpl implements PaymentDataSource {
   async getOunAllPayment(dto: jwtDto): Promise<PaymentEntity[]> {
     try {
       const userId = this.authorize(dto);
-
-      const useCase = new PaymentUseCases.GetUserPaymentsUseCase();
-      const payments = await useCase.execute(userId);
-
+      const payments = await PaymentUseCases.GetAllByUserId.execute(userId);
       return PaymentMapper.toEntities(payments);
     } catch (error) {
       this.handleError(error);

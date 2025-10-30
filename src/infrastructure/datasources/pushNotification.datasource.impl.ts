@@ -4,10 +4,13 @@ import { PushNotificationMapper } from "../index";
 import * as PushNotificationUseCases from "../../domain/use-cases/push-notification";
 
 export class PushNotificationDataSourceImpl implements PushNotificationDatasource {
+
+  
   constructor(
     private readonly verifyToken: (dto: jwtDto) => string,
     private readonly handleError: (error: unknown) => never
   ) { }
+
 
   private authorize(dto: jwtDto) {
     const userId = this.verifyToken(dto);
@@ -16,13 +19,12 @@ export class PushNotificationDataSourceImpl implements PushNotificationDatasourc
   }
 
 
+
+
   async saveToken(dto: jwtDto, saveTokenDto: SaveTokenDto): Promise<PushNotificationEntity> {
     try {
       const userId = this.authorize(dto);
-
-      const useCase = new PushNotificationUseCases.SaveTokenUseCase();
-      const tokenDoc = await useCase.execute(userId, saveTokenDto);
-
+      const tokenDoc = await PushNotificationUseCases.SaveToken.execute(userId, saveTokenDto);
       return PushNotificationMapper.toEntity(tokenDoc);
     } catch (error) {
       this.handleError(error);
@@ -32,10 +34,7 @@ export class PushNotificationDataSourceImpl implements PushNotificationDatasourc
   async getTokensByUser(dto: jwtDto): Promise<PushNotificationEntity> {
     try {
       const userId = this.authorize(dto);
-
-      const useCase = new PushNotificationUseCases.GetTokensByUserUseCase();
-      const tokenDoc = await useCase.execute(userId);
-
+      const tokenDoc = await PushNotificationUseCases.GetTokensByUserId.execute(userId);
       return PushNotificationMapper.toEntity(tokenDoc);
     } catch (error) {
       this.handleError(error);
@@ -44,8 +43,7 @@ export class PushNotificationDataSourceImpl implements PushNotificationDatasourc
 
   async sendNotification(sendNotificationDto: SendNotificationDto): Promise<void> {
     try {
-      const useCase = new PushNotificationUseCases.SendNotificationUseCase();
-      await useCase.execute(sendNotificationDto);
+      await PushNotificationUseCases.SendNotification.execute(sendNotificationDto);
     } catch (error) {
       this.handleError(error);
     }

@@ -1,4 +1,4 @@
-export {GetTokensByUserUseCase} from './getTokensByUserId.use-case';
-export {SaveTokenUseCase} from './saveToken.use-case';
-export {SendNotificationUseCase} from './send-notification.use-case';
+export {GetTokensByUserId} from './getTokensByUserId.use-case';
+export {SaveToken} from './saveToken.use-case';
+export {SendNotification} from './send-notification.use-case';
 

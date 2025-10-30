@@ -1,8 +1,8 @@
 import { PushNotificationModel } from "../../../data/mogodb";
 import { SaveTokenDto } from "../../dtos";
 
-export class SaveTokenUseCase {
-  async execute(userId: string, { token, platform }: SaveTokenDto) {
+export class SaveToken {
+  static async execute(userId: string, { token, platform }: SaveTokenDto) {
     const existing = await PushNotificationModel.findOne({ userId, token });
     if (existing) return existing;
 

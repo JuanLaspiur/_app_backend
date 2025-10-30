@@ -1,13 +1,7 @@
-import { NotificationDataSource, NotificationEntity } from "../../domain";
+import { CustomError, NotificationDataSource, NotificationEntity } from "../../domain";
 import { jwtDto, CreateNotificationDto, UpdateNotificationDto } from "../../domain/dtos";
 import { NotificationMapper } from "../mappers/notification.mapper";
-import {
-  createNotificationUseCase,
-  updateNotificationUseCase,
-  updateUserNotificationsStatusUseCase,
-  getAllNotificationsUseCase,
-  getUserNotificationsUseCase
-} from "../../domain/use-cases/notification";
+import * as notificationUseCases from "../../domain/use-cases/notification"; // TO DO PASAR DE CLASE A FUNCIONES con metodo static execute
 
 export class NotificationDataSourceImpl implements NotificationDataSource {
   constructor(
@@ -15,16 +9,15 @@ export class NotificationDataSourceImpl implements NotificationDataSource {
     private readonly handleError: (error: unknown) => never
   ) {}
 
-  /** Helper para verificar token */
   private authorize(dto: jwtDto) {
     const userId = this.verifyToken(dto);
-    if (!userId) throw new Error("unauthorized: invalid token");
+     if (!userId) throw CustomError.unauthorized("unauthorized: invalid authtoken");
     return userId;
   }
 
   async createNotification(dto: CreateNotificationDto): Promise<NotificationEntity> {
     try {
-      const doc = await createNotificationUseCase(dto);
+      const doc = await notificationUseCases.Create.execute(dto);
       return NotificationMapper.toEntity(doc);
     } catch (error) {
       this.handleError(error);
@@ -33,7 +26,7 @@ export class NotificationDataSourceImpl implements NotificationDataSource {
 
   async updateNotification(id: string, dto: UpdateNotificationDto): Promise<NotificationEntity> {
     try {
-      const doc = await updateNotificationUseCase(id, dto);
+      const doc = await notificationUseCases.Update.execute(id, dto);
       return NotificationMapper.toEntity(doc);
     } catch (error) {
       this.handleError(error);
@@ -43,7 +36,7 @@ export class NotificationDataSourceImpl implements NotificationDataSource {
   async updateNotificationsStatusJWT(updateStatusDto: jwtDto): Promise<NotificationEntity[]> {
     try {
       const userId = this.authorize(updateStatusDto);
-      const docs = await updateUserNotificationsStatusUseCase(userId);
+      const docs = await notificationUseCases.UpdateStatus.execute(userId);
       return NotificationMapper.toEntities(docs);
     } catch (error) {
       this.handleError(error);
@@ -52,7 +45,7 @@ export class NotificationDataSourceImpl implements NotificationDataSource {
 
   async getAllNotifications(): Promise<NotificationEntity[]> {
     try {
-      const docs = await getAllNotificationsUseCase();
+      const docs = await notificationUseCases.GetAll.execute();
       return NotificationMapper.toEntities(docs);
     } catch (error) {
       this.handleError(error);
@@ -62,7 +55,7 @@ export class NotificationDataSourceImpl implements NotificationDataSource {
   async getAllUserNotifications(dto: jwtDto): Promise<NotificationEntity[]> {
     try {
       const userId = this.authorize(dto);
-      const docs = await getUserNotificationsUseCase(userId);
+      const docs = await notificationUseCases.GetAllByUserId.execute(userId);
       return NotificationMapper.toEntities(docs);
     } catch (error) {
       this.handleError(error);

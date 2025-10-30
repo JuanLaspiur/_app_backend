@@ -1,7 +1,7 @@
 import { WorkDayLogModel } from "../../../data/mogodb"; 
 
 export class GetAllWorkDayLogsByUserIdUseCase {
-   async execute(userId: string) {
+   static async execute(userId: string) {
     const workdayLogs = await WorkDayLogModel.find({ userId })
       .populate({
         path: "scheduleId",

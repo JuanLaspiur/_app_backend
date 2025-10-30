@@ -9,7 +9,7 @@ export class GetTodayWorkDayLogByScheduleUseCase {
    * @param scheduleId - ID del horario de hoy
    * @returns El documento de WorkDayLog con el schedule populado
    */
-  async execute(scheduleId: string) {
+  static async execute(scheduleId: string) {
     const todayLog = await WorkDayLogModel.findOne({ scheduleId })
       .populate({
         path: "scheduleId",

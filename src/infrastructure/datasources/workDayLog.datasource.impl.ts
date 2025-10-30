@@ -3,8 +3,8 @@ import { CloseLogDto, jwtDto, OpenLogDto } from "../../domain/dtos";
 import { WorkDayStatus } from "../../data/mogodb";
 import { WorkDayLogMapper } from "../mappers/workDayLog.mapper";
 import { determineAttendanceStatus } from "../../config/helpers/status.helper";
-import * as workSheduleUseCase from '../../domain/use-cases/workSchedule'
-import * as workDayLogUseCase from "../../domain/use-cases/workDayLog";
+import * as scheduleUseCase from '../../domain/use-cases/workSchedule'
+import * as LogUseCase from "../../domain/use-cases/workDayLog";
 
 export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
 
@@ -22,8 +22,7 @@ export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
 
 
   private async getLogById(logId: string) {
-    const useCase = new workDayLogUseCase.GetWorkDayLogByIdUseCase();
-    return useCase.execute(logId);
+    return LogUseCase.GetWorkDayLogByIdUseCase.execute(logId);
   }
   
 
@@ -33,8 +32,7 @@ export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
 
       const workdaylog = await this.getLogById(openLogDto.logId);
 
-      const scheduleUseCase = new workSheduleUseCase.GetWorkScheduleByIdUseCase();
-      const workSchedule = await scheduleUseCase.execute(workdaylog.scheduleId);
+      const workSchedule = await scheduleUseCase.GetWorkScheduleByIdUseCase.execute(workdaylog.scheduleId);
 
       workdaylog.status = determineAttendanceStatus(workSchedule.startTime);
       workdaylog.checkIn = new Date();
@@ -79,8 +77,7 @@ export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
     try {
       const userId = this.authorize(dto);
 
-      const useCase = new workDayLogUseCase.GetAllWorkDayLogsByUserIdUseCase();
-      const workdayLogs = await useCase.execute(userId);
+      const workdayLogs = await LogUseCase.GetAllWorkDayLogsByUserIdUseCase.execute(userId);
 
       return WorkDayLogMapper.toEntitiesWithPopulate(workdayLogs);
     } catch (error) {
@@ -92,11 +89,9 @@ export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
     try {
       const userId = this.authorize(dto);
 
-      const scheduleUseCase = new workSheduleUseCase.GetTodayWorkScheduleUseCase();
-      const todaySchedule = await scheduleUseCase.execute(userId);
+      const todaySchedule = await scheduleUseCase.GetTodayWorkScheduleUseCase.execute(userId);
 
-      const logUseCase = new workSheduleUseCase.GetTodayWorkDayLogByScheduleUseCase();
-      const todayLog = await logUseCase.execute(todaySchedule.id);
+      const todayLog = await scheduleUseCase.GetTodayWorkDayLogByScheduleUseCase.execute(todaySchedule.id);
 
       return WorkDayLogMapper.toEntityWithPopulate(todayLog);
     } catch (error) {

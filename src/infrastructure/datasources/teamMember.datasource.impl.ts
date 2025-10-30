@@ -23,8 +23,7 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
             const useCase = new teamMemberUseCases.CreateTeamMemberUseCase();
             const teamMember = await useCase.execute(createTeamMemberDto);
             if (teamMember.userId) {
-                const updateUserUseCase = new UpdateUserByIdUseCase();
-                await updateUserUseCase.execute(createTeamMemberDto.userId, { teamMember: teamMember.id });
+                await UpdateUserByIdUseCase.execute(createTeamMemberDto.userId, { teamMember: teamMember.id });
             }
             return TeamMemberMapper.toEntity(teamMember);
         } catch (error) {

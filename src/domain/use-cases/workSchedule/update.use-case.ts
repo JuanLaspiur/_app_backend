@@ -2,7 +2,7 @@ import { WorkScheduleModel } from "../../../data/mogodb";
 import { CustomError } from "../../errors/custom.error";
 
 export class UpdateWorkScheduleUseCase {
-  async execute(id: string, data: any) {
+  static async execute(id: string, data: any) {
     const updated = await WorkScheduleModel.findByIdAndUpdate(
       id,
       { ...data, updatedAt: new Date() },

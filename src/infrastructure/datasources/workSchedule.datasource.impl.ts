@@ -20,10 +20,9 @@ export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
     try {
       const userId = this.authorize(dto);
 
-      const useCase = new useCases.CreateWorkScheduleUseCase();
-      const doc = await useCase.execute(userId, createDto);
+      const workShedule = await useCases.CreateWorkScheduleUseCase.execute(userId, createDto);
       
-      return WorkScheduleMapper.toEntity(doc);
+      return WorkScheduleMapper.toEntity(workShedule);
     } catch (error) {
       this.handleError(error);
     }
@@ -32,8 +31,7 @@ export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
 
   async updateWorkShedule(updateDto: UpdateWorkScheduleDto): Promise<WorkScheduleEntity> {
     try {
-      const useCase = new useCases.UpdateWorkScheduleUseCase();
-      const updated = await useCase.execute(updateDto.id, updateDto);
+      const updated = await useCases.UpdateWorkScheduleUseCase.execute(updateDto.id, updateDto);
 
       if (!updated) throw CustomError.notFound("Work schedule not found");
       return WorkScheduleMapper.toEntity(updated);
@@ -44,8 +42,7 @@ export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
 
   async deleteWorkShedule(workScheduleId: string): Promise<void> {
     try {
-      const useCase = new useCases.DeleteWorkScheduleUseCase();
-      await useCase.execute(workScheduleId);
+      await useCases.DeleteWorkScheduleUseCase.execute(workScheduleId);
     } catch (error) {
       this.handleError(error);
     }
@@ -57,8 +54,8 @@ export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
       const userId = this.authorize(dto);
 
       await WorkDayLogModel.deleteMany({ userId });
-      const useCase = new useCases.DeleteAllUserWorkSchedulesUseCase();
-      await useCase.execute(userId);
+      await useCases.DeleteAllUserWorkSchedulesUseCase.execute(userId);
+
     } catch (error) {
       this.handleError(error);
     }
@@ -69,8 +66,7 @@ export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
     try {
       const userId = this.authorize(dto);
 
-      const useCase = new useCases.GetAllWorkSchedulesUseCase();
-      const docs = await useCase.execute(userId);
+      const docs = await useCases.GetAllWorkSchedulesUseCase.execute(userId);
       return WorkScheduleMapper.toEntities(docs);
     } catch (error) {
       this.handleError(error);
@@ -80,8 +76,7 @@ export class WorkScheduleDataSourceImpl implements WorkScheduleDataSource {
     try {
       this.authorize(dto)
       
-      const useCase = new useCases.GetAllWorkSchedulesUseCase();
-      const docs = await useCase.execute(userId);
+      const docs = await useCases.GetAllWorkSchedulesUseCase.execute(userId);
       return WorkScheduleMapper.toEntities(docs);
     } catch (error) {
       this.handleError(error);

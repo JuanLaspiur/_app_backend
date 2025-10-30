@@ -10,7 +10,7 @@ export class GetTodayWorkScheduleUseCase {
    * @param userId - ID del usuario autenticado.
    * @returns El documento del horario de trabajo para el día actual.
    */
-  async execute(userId: string) {
+ static async execute(userId: string) {
     const todayName = getTodayName(); 
 
     const todaySchedule = await WorkScheduleModel.findOne({ userId, day: todayName }).exec();

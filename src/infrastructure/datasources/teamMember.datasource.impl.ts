@@ -67,8 +67,8 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
         try {
            this.authorize(dto);
             const useCase = new teamMemberUseCases.GetAllTeamMembersUseCase();
-            const docs = await useCase.execute();
-            return TeamMemberMapper.toEntities(docs);
+            const teamMembers = await useCase.execute();
+            return TeamMemberMapper.toEntities(teamMembers);
         } catch (error) {
             this.handleError(error);
         }

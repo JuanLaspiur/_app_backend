@@ -13,16 +13,19 @@ export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
     private readonly handleError: (error: unknown) => never
   ) { }
 
+
   private authorize(dto: jwtDto) {
     const userId = this.verifyToken(dto);
     if (!userId) throw CustomError.unauthorized("unauthorized: invalid authtoken");
     return userId;
   }
 
+
   private async getLogById(logId: string) {
     const useCase = new workDayLogUseCase.GetWorkDayLogByIdUseCase();
     return useCase.execute(logId);
   }
+  
 
   async openLog(dto: jwtDto, openLogDto: OpenLogDto): Promise<WorkDayLogEntity> {
     try {

@@ -1,26 +1,29 @@
-import { PushNotificationModel } from "../../data/mogodb";
-import { PushNotificationDatasource, PushNotificationEntity } from "../../domain";
+import { CustomError, PushNotificationDatasource, PushNotificationEntity } from "../../domain";
 import { jwtDto, SaveTokenDto, SendNotificationDto } from "../../domain/dtos";
 import { PushNotificationMapper } from "../index";
+import * as PushNotificationUseCases from "../../domain/use-cases/push-notification";
 
 export class PushNotificationDataSourceImpl implements PushNotificationDatasource {
   constructor(
     private readonly verifyToken: (dto: jwtDto) => string,
     private readonly handleError: (error: unknown) => never
-  ) {}
+  ) { }
+
+  private authorize(dto: jwtDto) {
+    const userId = this.verifyToken(dto);
+    if (!userId) throw CustomError.unauthorized("unauthorized: invalid token");
+    return userId;
+  }
+
 
   async saveToken(dto: jwtDto, saveTokenDto: SaveTokenDto): Promise<PushNotificationEntity> {
     try {
-      const userId = this.verifyToken(dto);
-      const { token, platform } = saveTokenDto;
+      const userId = this.authorize(dto);
 
-      const existing = await PushNotificationModel.findOne({ userId, token });
-      if (existing) {
-        return PushNotificationMapper.toEntity(existing);
-      }
+      const useCase = new PushNotificationUseCases.SaveTokenUseCase();
+      const tokenDoc = await useCase.execute(userId, saveTokenDto);
 
-      const created = await PushNotificationModel.create({ userId, token, platform });
-      return PushNotificationMapper.toEntity(created);
+      return PushNotificationMapper.toEntity(tokenDoc);
     } catch (error) {
       this.handleError(error);
     }
@@ -28,12 +31,10 @@ export class PushNotificationDataSourceImpl implements PushNotificationDatasourc
 
   async getTokensByUser(dto: jwtDto): Promise<PushNotificationEntity> {
     try {
-      const userId = this.verifyToken(dto);
+      const userId = this.authorize(dto);
 
-      const tokenDoc = await PushNotificationModel.findOne({ userId }).sort({ updatedAt: -1 });
-      if (!tokenDoc) {
-        throw new Error("No push token found for this user");
-      }
+      const useCase = new PushNotificationUseCases.GetTokensByUserUseCase();
+      const tokenDoc = await useCase.execute(userId);
 
       return PushNotificationMapper.toEntity(tokenDoc);
     } catch (error) {
@@ -43,7 +44,8 @@ export class PushNotificationDataSourceImpl implements PushNotificationDatasourc
 
   async sendNotification(sendNotificationDto: SendNotificationDto): Promise<void> {
     try {
-      throw new Error("Method not implemented.");
+      const useCase = new PushNotificationUseCases.SendNotificationUseCase();
+      await useCase.execute(sendNotificationDto);
     } catch (error) {
       this.handleError(error);
     }

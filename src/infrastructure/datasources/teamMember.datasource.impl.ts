@@ -1,7 +1,8 @@
-import { TeamMemberDataSource, TeamMemberEntity } from "../../domain";
+import { CustomError, TeamMemberDataSource, TeamMemberEntity } from "../../domain";
 import { TeamMemberMapper } from "../mappers/teamMember.mapper";
 import { CreateTeamMemberDto, jwtDto, UpdateTeamMemberDto } from "../../domain/dtos";
-import { TeamMemberModel, UserModel } from "../../data/mogodb/";
+import { UpdateUserByIdUseCase } from "../../domain/use-cases/user";
+import * as teamMemberUseCases from "../../domain/use-cases/teamMember";
 
 export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
     constructor(
@@ -9,21 +10,21 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
         private readonly handleError: (error: unknown) => never
     ) { }
 
+    private authorize(dto: jwtDto) {
+        const userId = this.verifyToken(dto);
+        if (!userId) throw CustomError.unauthorized("unauthorized: invalid token");
+        return userId;
+    }
+
 
     async createTeamMember(dto: jwtDto, createTeamMemberDto: CreateTeamMemberDto): Promise<TeamMemberEntity> {
         try {
-            this.verifyToken(dto);
-            if (createTeamMemberDto.userId) {
-                const existingTeamMember = await TeamMemberModel.findOne({ userId: createTeamMemberDto.userId });
-                if (existingTeamMember) {
-                    await TeamMemberModel.findByIdAndDelete(existingTeamMember.id);
-                }
-            }
-            const teamMember = await TeamMemberModel.create(createTeamMemberDto);
+            this.authorize(dto);
+            const useCase = new teamMemberUseCases.CreateTeamMemberUseCase();
+            const teamMember = await useCase.execute(createTeamMemberDto);
             if (teamMember.userId) {
-                await UserModel.findByIdAndUpdate(createTeamMemberDto.userId, {
-                    teamMember: teamMember.id,
-                });
+                const updateUserUseCase = new UpdateUserByIdUseCase();
+                await updateUserUseCase.execute(createTeamMemberDto.userId, { teamMember: teamMember.id });
             }
             return TeamMemberMapper.toEntity(teamMember);
         } catch (error) {
@@ -33,8 +34,9 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
 
     async getUserTeamMember(dto: jwtDto): Promise<TeamMemberEntity | null> {
         try {
-            const userId = this.verifyToken(dto);
-            const teamMember = await TeamMemberModel.find({ userId });
+            const userId = this.authorize(dto);
+            const useCase = new teamMemberUseCases.GetUserTeamMemberUseCase();
+            const teamMember = await useCase.execute(userId);
             return TeamMemberMapper.toEntity(teamMember);
         } catch (error) {
             this.handleError(error);
@@ -42,15 +44,10 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
     }
     async updateTeamMember(dto: jwtDto, updatesDto: UpdateTeamMemberDto): Promise<TeamMemberEntity | null> {
         try {
-            this.verifyToken(dto);
-
-            const doc = await TeamMemberModel.findByIdAndUpdate(
-                updatesDto.id,
-                updatesDto,
-                { new: true }
-            );
-
-            return TeamMemberMapper.toEntity(doc);
+            this.authorize(dto);
+            const useCase = new teamMemberUseCases.UpdateTeamMemberUseCase();
+            const updated = await useCase.execute(updatesDto.id, updatesDto);
+            return TeamMemberMapper.toEntity(updated);
         } catch (error) {
             this.handleError(error);
         }
@@ -58,9 +55,9 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
 
     async deleteTeamMember(dto: jwtDto, teamMemberId: string): Promise<boolean> {
         try {
-            this.verifyToken(dto);
-            const result = await TeamMemberModel.findByIdAndDelete(teamMemberId);
-            return !!result;
+            this.authorize(dto);
+            const useCase = new teamMemberUseCases.DeleteTeamMemberUseCase();
+            return !! await useCase.execute(teamMemberId);;
         } catch (error) {
             this.handleError(error);
         }
@@ -68,8 +65,9 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
 
     async getAllTeamMembers(dto: jwtDto): Promise<TeamMemberEntity[]> {
         try {
-            this.verifyToken(dto);
-            const docs = await TeamMemberModel.find().populate({ path: "userId", select: '-password -session' });
+           this.authorize(dto);
+            const useCase = new teamMemberUseCases.GetAllTeamMembersUseCase();
+            const docs = await useCase.execute();
             return TeamMemberMapper.toEntities(docs);
         } catch (error) {
             this.handleError(error);

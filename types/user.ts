@@ -1,3 +1,5 @@
+import { TeamMember } from "./teamMember";
+
 export interface User {
   id?: number;
   firstName: string;
@@ -17,5 +19,6 @@ export interface User {
     lastLogin: string;
   };
   jobTitle?: string;    
-  location?: string;   
+  location?: string; 
+  teamMember?: TeamMember  
 }

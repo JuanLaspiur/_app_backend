@@ -1,7 +1,7 @@
 import { CustomError, NotificationDataSource, NotificationEntity } from "../../domain";
 import { jwtDto, CreateNotificationDto, UpdateNotificationDto } from "../../domain/dtos";
 import { NotificationMapper } from "../mappers/notification.mapper";
-import * as notificationUseCases from "../../domain/use-cases/notification"; // TO DO PASAR DE CLASE A FUNCIONES con metodo static execute
+import * as notificationUseCases from "../../domain/use-cases/notification"; 
 
 export class NotificationDataSourceImpl implements NotificationDataSource {
   constructor(

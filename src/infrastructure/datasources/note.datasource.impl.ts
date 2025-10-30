@@ -18,7 +18,7 @@ export class NoteDataSourceImpl implements NoteDataSource {
   async createdNoteByJWT(dto: jwtDto, createNoteDto: CreateNoteDto): Promise<NoteEntity> {
     try {
       const userId = this.authorize(dto);
-      const note = await noteUseCases.CreateNoteUseCase.execute( userId, createNoteDto );
+      const note = await noteUseCases.Create.execute( userId, createNoteDto );
       return NoteMapper.toEntity(note);
     } catch (error) {
       this.handleError(error);
@@ -28,7 +28,7 @@ export class NoteDataSourceImpl implements NoteDataSource {
   async updateNoteByJWT(dto: jwtDto, updateNoteDto: UpdateNoteDto): Promise<NoteEntity> {
     try {
       const userId = this.authorize(dto);
-      const note = await noteUseCases.UpdateNoteUseCase.execute(userId, updateNoteDto);
+      const note = await noteUseCases.Update.execute(userId, updateNoteDto);
       return NoteMapper.toEntity(note);
     } catch (error) {
       this.handleError(error);
@@ -38,7 +38,7 @@ export class NoteDataSourceImpl implements NoteDataSource {
   async getAllNoteByJWT(dto: jwtDto): Promise<NoteEntity[]> {
     try {
       const userId = this.authorize(dto);
-      const notes = await noteUseCases.GetAllNotesByUserIdUseCase.execute(userId);
+      const notes = await noteUseCases.GetAllByUserId.execute(userId);
       return NoteMapper.toEntities(notes);
     } catch (error) {
       this.handleError(error);
@@ -48,7 +48,7 @@ export class NoteDataSourceImpl implements NoteDataSource {
   async deleteNoteByJWT(dto: jwtDto, deleteNoteDto: DeleteNoteDto): Promise<void> {
     try {
       const userId = this.authorize(dto);
-      await noteUseCases.DeleteNoteUseCase.execute(userId, deleteNoteDto);
+      await noteUseCases.Delete.execute(userId, deleteNoteDto);
     } catch (error) {
       this.handleError(error);
     }

@@ -2,7 +2,7 @@ import { NoteModel } from "../../../data/mogodb/models/note.model";
 import { UpdateNoteDto } from "../../dtos";
 import { CustomError } from "../../errors/custom.error";
 
-export class UpdateNoteUseCase {
+export class Update {
   static async execute(userId: string, dto: UpdateNoteDto) {
     const doc = await NoteModel.findOneAndUpdate(
       { _id: dto.id, userId },

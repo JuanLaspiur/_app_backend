@@ -1,1 +1,5 @@
-export {GetById} from "./getById.use-case";
+export * from "./getById.use-case";
+export * from "./create.use-case";
+export * from "./update.use-case";
+export * from "./delete.use-case";
+export * from "./getAll.use-case";

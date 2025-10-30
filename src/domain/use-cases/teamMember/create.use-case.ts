@@ -1,7 +1,7 @@
 import { TeamMemberModel } from "../../../data/mogodb/";
 import { CreateTeamMemberDto } from "../../dtos";
 
-export class CreateTeamMember {
+export class Create {
  static async execute(createDto: CreateTeamMemberDto) {
     if (createDto.userId) {
       const existing = await TeamMemberModel.findOne({ userId: createDto.userId });

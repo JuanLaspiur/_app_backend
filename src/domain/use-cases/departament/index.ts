@@ -1,1 +1,1 @@
-export {GetDepartmentByIdUseCase} from "./getById.use-case";
+export {GetById} from "./getById.use-case";

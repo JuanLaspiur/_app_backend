@@ -1,7 +1,7 @@
 import { TeamModel } from "../../../data/mogodb";
 
-export class GetAllTeamsUseCase {
-  async execute() {
+export class GetAll {
+ static async execute() {
     return TeamModel.find();
   }
 }

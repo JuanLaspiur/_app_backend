@@ -20,7 +20,7 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
     async createTeamMember(dto: jwtDto, createTeamMemberDto: CreateTeamMemberDto): Promise<TeamMemberEntity> {
         try {
             this.authorize(dto);
-            const teamMember = await teamMemberUseCases.CreateTeamMember.execute(createTeamMemberDto);
+            const teamMember = await teamMemberUseCases.Create.execute(createTeamMemberDto);
             if (teamMember.userId) {
                 await UpdateUserById.execute(createTeamMemberDto.userId, { teamMember: teamMember.id });
             }
@@ -33,8 +33,7 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
     async getUserTeamMember(dto: jwtDto): Promise<TeamMemberEntity | null> {
         try {
             const userId = this.authorize(dto);
-            const useCase = new teamMemberUseCases.GetUserTeamMemberUseCase();
-            const teamMember = await useCase.execute(userId);
+            const teamMember = await teamMemberUseCases.GetOneByUserId.execute(userId);
             return TeamMemberMapper.toEntity(teamMember);
         } catch (error) {
             this.handleError(error);
@@ -43,8 +42,7 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
     async updateTeamMember(dto: jwtDto, updatesDto: UpdateTeamMemberDto): Promise<TeamMemberEntity | null> {
         try {
             this.authorize(dto);
-            const useCase = new teamMemberUseCases.UpdateTeamMemberUseCase();
-            const updated = await useCase.execute(updatesDto.id, updatesDto);
+            const updated = await teamMemberUseCases.Update.execute(updatesDto.id, updatesDto);
             return TeamMemberMapper.toEntity(updated);
         } catch (error) {
             this.handleError(error);
@@ -54,8 +52,7 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
     async deleteTeamMember(dto: jwtDto, teamMemberId: string): Promise<boolean> {
         try {
             this.authorize(dto);
-            const useCase = new teamMemberUseCases.DeleteTeamMemberUseCase();
-            return !! await useCase.execute(teamMemberId);;
+            return !! await teamMemberUseCases.Delete.execute(teamMemberId);;
         } catch (error) {
             this.handleError(error);
         }
@@ -64,8 +61,7 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
     async getAllTeamMembers(dto: jwtDto): Promise<TeamMemberEntity[]> {
         try {
            this.authorize(dto);
-            const useCase = new teamMemberUseCases.GetAllTeamMembersUseCase();
-            const teamMembers = await useCase.execute();
+            const teamMembers = await teamMemberUseCases.GetAll.execute();
             return TeamMemberMapper.toEntities(teamMembers);
         } catch (error) {
             this.handleError(error);

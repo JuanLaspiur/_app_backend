@@ -1,6 +1,6 @@
 import { WorkScheduleModel } from "../../../data/mogodb";
 
-export class DeleteAllUserWorkSchedulesUseCase {
+export class DeleteAllFromUser {
   static async execute(userId: string): Promise<void> {
     if (!userId) throw new Error("User ID is required");
 

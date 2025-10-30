@@ -22,7 +22,7 @@ export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
 
 
   private async getLogById(logId: string) {
-    return LogUseCase.GetWorkDayLogByIdUseCase.execute(logId);
+    return LogUseCase.GetById.execute(logId);
   }
   
 
@@ -32,7 +32,7 @@ export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
 
       const workdaylog = await this.getLogById(openLogDto.logId);
 
-      const workSchedule = await scheduleUseCase.GetWorkScheduleByIdUseCase.execute(workdaylog.scheduleId);
+      const workSchedule = await scheduleUseCase.GetById.execute(workdaylog.scheduleId);
 
       workdaylog.status = determineAttendanceStatus(workSchedule.startTime);
       workdaylog.checkIn = new Date();
@@ -77,7 +77,7 @@ export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
     try {
       const userId = this.authorize(dto);
 
-      const workdayLogs = await LogUseCase.GetAllWorkDayLogsByUserIdUseCase.execute(userId);
+      const workdayLogs = await LogUseCase.GetAllByUserId.execute(userId);
 
       return WorkDayLogMapper.toEntitiesWithPopulate(workdayLogs);
     } catch (error) {
@@ -89,9 +89,9 @@ export class WorkDayLogDataSourceImpl implements WorkDayLogDataSource {
     try {
       const userId = this.authorize(dto);
 
-      const todaySchedule = await scheduleUseCase.GetTodayWorkScheduleUseCase.execute(userId);
+      const todaySchedule = await scheduleUseCase.GetToday.execute(userId);
 
-      const todayLog = await scheduleUseCase.GetTodayWorkDayLogByScheduleUseCase.execute(todaySchedule.id);
+      const todayLog = await scheduleUseCase.GetTodayByScheduleId.execute(todaySchedule.id);
 
       return WorkDayLogMapper.toEntityWithPopulate(todayLog);
     } catch (error) {

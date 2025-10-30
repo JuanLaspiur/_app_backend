@@ -13,7 +13,7 @@ export class UserDataSourceImpl implements UserDataSource {
 
   async getAllUsers(): Promise<UserEntity[]> {
     try {
-      const users = await userUseCase.GetAllUsersUseCase.execute();
+      const users = await userUseCase.GetAllUsers.execute();
       return UserMapper.toEntities(users);
     } catch (error) {
       this.handleError(error);
@@ -22,7 +22,7 @@ export class UserDataSourceImpl implements UserDataSource {
 
   async getAllActiveUsers(): Promise<UserEntity[]> {
     try {
-      const users = await userUseCase.GetAllActivesUseCase.execute();
+      const users = await userUseCase.GetAllActives.execute();
       return UserMapper.toEntities(users);
     } catch (error) {
       this.handleError(error);
@@ -31,7 +31,7 @@ export class UserDataSourceImpl implements UserDataSource {
 
   async getUserById(dto: GetUserByIdDto): Promise<UserEntity> {
     try {
-      const user = await userUseCase.GetUserByIdUseCase.execute(dto.userId);
+      const user = await userUseCase.GetUserById.execute(dto.userId);
       if (!user) throw CustomError.notFound("User not found");
       return UserMapper.userEntityFromObject(user);
     } catch (error) {
@@ -42,7 +42,7 @@ export class UserDataSourceImpl implements UserDataSource {
   async updateUserById(dto: UpdateUserDto): Promise<UserEntity> {
     try {
       const { id, ...updateData } = dto;
-      const updatedUser = await userUseCase.UpdateUserByIdUseCase.execute(id, updateData);
+      const updatedUser = await userUseCase.UpdateUserById.execute(id, updateData);
       if (!updatedUser) throw CustomError.notFound("User not found");
       return UserMapper.userEntityFromObject(updatedUser);
     } catch (error) {

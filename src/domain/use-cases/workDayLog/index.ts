@@ -1,2 +1,2 @@
-export { GetAllWorkDayLogsByUserIdUseCase } from "./getByUserId";
-export { GetWorkDayLogByIdUseCase } from "./getById";
+export { GetAllByUserId } from "./getByUserId";
+export { GetById } from "./getById";

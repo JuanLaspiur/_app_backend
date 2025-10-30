@@ -1,7 +1,7 @@
 import { CustomError, TeamMemberDataSource, TeamMemberEntity } from "../../domain";
 import { TeamMemberMapper } from "../mappers/teamMember.mapper";
 import { CreateTeamMemberDto, jwtDto, UpdateTeamMemberDto } from "../../domain/dtos";
-import { UpdateUserByIdUseCase } from "../../domain/use-cases/user";
+import { UpdateUserById } from "../../domain/use-cases/user";
 import * as teamMemberUseCases from "../../domain/use-cases/teamMember";
 
 export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
@@ -20,10 +20,9 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
     async createTeamMember(dto: jwtDto, createTeamMemberDto: CreateTeamMemberDto): Promise<TeamMemberEntity> {
         try {
             this.authorize(dto);
-            const useCase = new teamMemberUseCases.CreateTeamMemberUseCase();
-            const teamMember = await useCase.execute(createTeamMemberDto);
+            const teamMember = await teamMemberUseCases.CreateTeamMember.execute(createTeamMemberDto);
             if (teamMember.userId) {
-                await UpdateUserByIdUseCase.execute(createTeamMemberDto.userId, { teamMember: teamMember.id });
+                await UpdateUserById.execute(createTeamMemberDto.userId, { teamMember: teamMember.id });
             }
             return TeamMemberMapper.toEntity(teamMember);
         } catch (error) {

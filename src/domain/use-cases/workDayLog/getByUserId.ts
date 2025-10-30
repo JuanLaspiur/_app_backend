@@ -1,6 +1,6 @@
 import { WorkDayLogModel } from "../../../data/mogodb"; 
 
-export class GetAllWorkDayLogsByUserIdUseCase {
+export class GetAllByUserId {
    static async execute(userId: string) {
     const workdayLogs = await WorkDayLogModel.find({ userId })
       .populate({

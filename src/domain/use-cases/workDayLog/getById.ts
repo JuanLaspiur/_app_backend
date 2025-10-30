@@ -1,7 +1,7 @@
 import { WorkDayLogModel } from "../../../data/mogodb";
 import { CustomError } from "../../errors/custom.error";
 
-export class GetWorkDayLogByIdUseCase {
+export class GetById {
   static async execute(logId: string) {
     const workDayLog = await WorkDayLogModel.findById(logId);
     if (!workDayLog) throw CustomError.badRequest("Work day log not found");

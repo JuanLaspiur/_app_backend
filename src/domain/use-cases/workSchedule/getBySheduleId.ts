@@ -1,7 +1,7 @@
 import { WorkDayLogModel } from "../../../data/mogodb";
 import { CustomError } from "../../errors/custom.error";
 
-export class GetTodayWorkDayLogByScheduleUseCase {
+export class GetTodayByScheduleId {
   /**
    * Busca el registro de jornada de hoy según el scheduleId.
    * Popula la información del horario (WorkSchedule) en el resultado.

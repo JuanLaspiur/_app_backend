@@ -43,7 +43,9 @@ export class UserDataSourceImpl implements UserDataSource {
     try {
       const { id, ...updateData } = dto;
       const updatedUser = await userUseCase.UpdateUserById.execute(id, updateData);
+ 
       if (!updatedUser) throw CustomError.notFound("User not found");
+
       return UserMapper.userEntityFromObject(updatedUser);
     } catch (error) {
       this.handleError(error);

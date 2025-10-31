@@ -9,3 +9,4 @@ export * from './models/department.model';
 export * from './models/team.model';
 export * from "./models/teamMember";
 export * from "./models/payment.model";
+export * from "./models/calendarTask.model"

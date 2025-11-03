@@ -37,7 +37,6 @@ function autoPopulate(this: Query<any, any>, next: () => void) {
       },
       {
         path: "projects",
-        select: "name status priority estimatedDeliveryDate",
       },
     ],
   });

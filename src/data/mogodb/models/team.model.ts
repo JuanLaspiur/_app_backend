@@ -42,7 +42,6 @@ function autoPopulateMembers(this: Query<any, any>, next: () => void) {
   });
   this.populate({
     path: "projects",
-    select: "name status priority estimatedDeliveryDate",
   });
   next();
 }

@@ -9,7 +9,7 @@ export const ProyectStatus = {
 } as const;
 export type ProyectStatusType = typeof ProyectStatus[keyof typeof ProyectStatus];
 
-// Enum exportable de prioridad
+
 export const ProyectPriority = {
   LOW: "LOW",
   MEDIUM: "MEDIUM",

@@ -12,8 +12,7 @@ export class CreatePaymentDto {
     if (!object) return ["No data provided"];
 
     const { userId, amount, method, status, description, date } = object;
-
-    // Validaciones
+   
     if (!userId) return ["Missing field: userId"];
     if (!amount || isNaN(Number(amount)) || Number(amount) <= 0)
       return ["Invalid amount value"];

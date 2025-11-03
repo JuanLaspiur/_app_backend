@@ -60,6 +60,9 @@ export * from "./teamMember/updateTeamMember.dto";
 export * from "./payment/createPayment.dto";
 export * from "./payment/updatePayment.dto";
 
+// proeyct
+export * from "./proyect/createProyect.dto";
+export * from "./proyect/updateProyect.dto";
 
 // JWT DTO 
 export * from './jwt.dto';

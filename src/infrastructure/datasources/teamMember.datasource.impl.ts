@@ -22,7 +22,7 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
             this.authorize(dto);
             const teamMember = await teamMemberUseCases.Create.execute(createTeamMemberDto);
             if (teamMember.userId) {
-                await UpdateUserById.execute(createTeamMemberDto.userId, { teamMember: teamMember.id });
+                await UpdateUserById.execute(createTeamMemberDto.userId, { teamMember: teamMember.id, isActive:true });
             }
             return TeamMemberMapper.toEntity(teamMember);
         } catch (error) {
@@ -52,7 +52,7 @@ export class TeamMemberDataSourceImpl implements TeamMemberDataSource {
     async deleteTeamMember(dto: jwtDto, teamMemberId: string): Promise<boolean> {
         try {
             this.authorize(dto);
-            return !! await teamMemberUseCases.Delete.execute(teamMemberId);;
+            return !! await teamMemberUseCases.Delete.execute(teamMemberId);
         } catch (error) {
             this.handleError(error);
         }

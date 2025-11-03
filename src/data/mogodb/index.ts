@@ -10,3 +10,4 @@ export * from './models/team.model';
 export * from "./models/teamMember";
 export * from "./models/payment.model";
 export * from "./models/calendarTask.model"
+export * from "./models/proyect.model";

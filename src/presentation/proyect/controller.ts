@@ -10,7 +10,11 @@ export class ProyectController {
 
     async createProyect(req: Request, res: Response) {
         try {
-            const [errorProyect, createProyectDto] = CreateProyectDto.create(req.body);
+            const teamId = req.params.id;
+            console.log('teamId ', teamId);
+            const [errorProyect, createProyectDto] = CreateProyectDto.create({ teamId, ...req.body });
+            console.log('errorProyect ', JSON.stringify(errorProyect));
+            console.log('createProyectDto ', JSON.stringify(createProyectDto));
             if (errorProyect || !createProyectDto) throw CustomError.badRequest(errorProyect ? errorProyect : 'Error create proyect body info');
             const authHeader = req.headers.authorization;
             if (!authHeader) throw CustomError.unauthorized('unauthorized');
@@ -38,7 +42,9 @@ export class ProyectController {
     async updateProyect(req: Request, res: Response) {
         try {
             const proyectId = req.params.id;
-            const [errorProyect, updateProyectDto] = UpdateProyectDto.create({id: proyectId, ...req.body});
+            const [errorProyect, updateProyectDto] = UpdateProyectDto.create({ id: proyectId, ...req.body });
+            console.log('errorProyect ', JSON.stringify(errorProyect));
+            console.log('updateProyectDto ', JSON.stringify(updateProyectDto));
             if (errorProyect || !updateProyectDto) throw CustomError.badRequest(errorProyect ? errorProyect : 'Error update proyect body info');
             const authHeader = req.headers.authorization;
             if (!authHeader) throw CustomError.unauthorized('unauthorized');

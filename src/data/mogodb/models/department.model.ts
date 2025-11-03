@@ -1,4 +1,4 @@
-import mongoose, { Schema, Query, Types } from "mongoose";
+import mongoose, { Schema, Query } from "mongoose";
 
 const DepartmentSchema = new Schema(
   {
@@ -26,7 +26,20 @@ function autoPopulate(this: Query<any, any>, next: () => void) {
     select: "-password -session",
   }).populate({
     path: "teams",
-    populate: { path: "members", select: "-password -session" },
+    populate: [
+      {
+        path: "members",
+        select: "-password -session",
+        populate: {
+          path: "userId",
+          select: "firstName lastName email avatarUrl phone",
+        },
+      },
+      {
+        path: "projects",
+        select: "name status priority estimatedDeliveryDate",
+      },
+    ],
   });
   next();
 }

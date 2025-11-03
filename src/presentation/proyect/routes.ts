@@ -10,7 +10,7 @@ export class ProyectRoutes {
         const controller = new ProyectController(proyectRepository, handleErrorController);
 
         const router = Router();
-        router.post('/create/', controller.createProyect.bind(controller));
+        router.post('/create/:id', controller.createProyect.bind(controller));
         router.get('/getAll', controller.getAllProyects.bind(controller));
         router.put('/update/:id', controller.updateProyect.bind(controller));
         return router;

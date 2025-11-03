@@ -8,7 +8,7 @@ export class DepartamentMapper {
       doc.name,
       doc.manager,
       doc.location,
-      doc.teams ? doc.teams.map((t:any) => new TeamEntity(t._id.toString(), t.name, t.members)) : [],
+      doc.teams ? doc.teams.map((t:any) => new TeamEntity(t._id.toString(), t.name, t.members, t.createdAt, t.updatedAt, t.projects)) : [],
       doc.createdAt,
       doc.updatedAt,
     );

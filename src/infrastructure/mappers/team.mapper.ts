@@ -7,7 +7,8 @@ export class TeamMapper {
       doc.name,
       doc.members ?? [],
       doc.createdAt ? new Date(doc.createdAt) : new Date(),
-      doc.updatedAt ? new Date(doc.updatedAt) : new Date()
+      doc.updatedAt ? new Date(doc.updatedAt) : new Date(),
+      doc.projects 
     );
   }
 

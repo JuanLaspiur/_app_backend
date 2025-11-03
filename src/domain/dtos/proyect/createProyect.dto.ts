@@ -18,6 +18,8 @@ export class CreateProyectDto {
   static create(object: any): [string?, CreateProyectDto?] {
     if (!object.teamId) return ["teamId is required"];
     if (!object.name) return ["name is required"];
+    // que verifique el status sea de ese tipo ProyectStatusType
+    // y priotity ProyectPriorityType 
 
     const dto = new CreateProyectDto(
       object.teamId,

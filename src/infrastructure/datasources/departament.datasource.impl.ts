@@ -30,6 +30,7 @@ export class DepartmentDataSourceImpl implements DepartmentDataSource {
     try {
       this.authorize(dto);
       const docs = await departamentsUseCases.GetAll.execute();
+      console.log('antes del mapper ',docs[2].teams)
       return DepartamentMapper.toEntities(docs);
     } catch (error) {
       this.handleError(error);

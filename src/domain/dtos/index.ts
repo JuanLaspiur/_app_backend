@@ -67,7 +67,8 @@ export * from "./proyect/updateProyect.dto";
 
 // TrelloTask
 export * from "./trelloTask/createTrelloTask.dto";
-
+export * from "./trelloTask/updateMember.dto";
+export * from "./trelloTask/moveTaskColumn.dto";
 
 
 // JWT DTO 

@@ -11,9 +11,17 @@ export class TrelloTaskRoutes {
         const controller = new TrelloTaskController(trelloTaskRepository, handleErrorController);
 
         const router = Router();
-        router.post('/create/', controller.createTrelloTask.bind(controller));
-         router.get('/getAllByColumnId/:columnId', controller.getAllTrelloTaskByColumnId.bind(controller));
+
+        // Existing routes
+        router.post('/create', controller.createTrelloTask.bind(controller));
+        router.get('/getAllByColumnId/:columnId', controller.getAllTrelloTaskByColumnId.bind(controller));
+
+        // New routes
+        router.post('/addMember', controller.addMember.bind(controller));
+        router.post('/removeMember', controller.removeMember.bind(controller));
+        router.post('/moveTaskToColumn', controller.moveTaskToColumn.bind(controller));
+        router.delete('/delete/:taskId', controller.deleteTrelloTaskById.bind(controller));
+
         return router;
     }
-
 }

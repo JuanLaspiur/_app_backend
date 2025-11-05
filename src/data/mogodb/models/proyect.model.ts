@@ -9,7 +9,6 @@ export const ProyectStatus = {
 } as const;
 export type ProyectStatusType = typeof ProyectStatus[keyof typeof ProyectStatus];
 
-
 export const ProyectPriority = {
   LOW: "LOW",
   MEDIUM: "MEDIUM",
@@ -56,6 +55,11 @@ export const ProyectSchema = new Schema(
     },
     budget: {
       type: Number, 
+      default: null,
+    },
+    trelloBoardId: {
+      type: Schema.Types.ObjectId,
+      ref: "TrelloBoard",
       default: null,
     },
     tags: [

@@ -14,6 +14,7 @@ export class ProyectEntity {
     public readonly budget: number | null = null,
     public readonly tags: string[] = [],
     public readonly createdAt: Date = new Date(),
-    public readonly updatedAt: Date = new Date()
+    public readonly updatedAt: Date = new Date(),
+    public readonly trelloBoardId: string | any
   ) {}
 }

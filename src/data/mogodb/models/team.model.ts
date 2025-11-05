@@ -36,12 +36,17 @@ function autoPopulateMembers(this: Query<any, any>, next: () => void) {
     select: "-__v",
     populate: {
       path: "userId",
-      select: "firstName lastName email avatarUrl phone", 
+      select: "firstName lastName email avatarUrl phone",
       options: { autopopulate: false },
     },
   });
   this.populate({
     path: "projects",
+    select: "-__v",
+    populate: {
+      path: "trelloBoardId",
+      options: { autopopulate: false },
+    }
   });
   next();
 }

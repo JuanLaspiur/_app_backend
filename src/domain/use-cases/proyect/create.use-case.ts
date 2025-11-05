@@ -1,4 +1,4 @@
-import { ProyectModel, TeamModel } from "../../../data/mogodb";
+import { ProyectModel, TeamModel, TrelloBoardModel } from "../../../data/mogodb";
 import { CreateProyectDto } from "../../dtos";
 
 export class Create {
@@ -7,9 +7,17 @@ export class Create {
 
     await TeamModel.findByIdAndUpdate(
       proyect.teamId,
-      { $addToSet: { projects: proyect.id } }, 
+      { $addToSet: { projects: proyect.id } },
       { new: true }
     );
+
+    const trelloBoard = await TrelloBoardModel.create({
+      projectId: proyect.id,
+      teamId: proyect.teamId,
+    });
+
+    proyect.trelloBoardId = trelloBoard.id;
+    await proyect.save();
 
     return proyect;
   }

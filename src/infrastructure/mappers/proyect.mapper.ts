@@ -18,7 +18,8 @@ export class ProyectMapper {
       doc.budget,
       doc.tags || [],
       doc.createdAt,
-      doc.updatedAt
+      doc.updatedAt,
+      doc.trelloBoardId
     );
   }
 

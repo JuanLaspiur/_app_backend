@@ -11,3 +11,5 @@ export * from "./models/teamMember";
 export * from "./models/payment.model";
 export * from "./models/calendarTask.model"
 export * from "./models/proyect.model";
+export * from "./models/TrelloBoard.model";
+export * from "./models/TrelloTask.model";

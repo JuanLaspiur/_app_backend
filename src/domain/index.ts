@@ -12,6 +12,7 @@ export * from './entities/team.entity';
 export * from './entities/teamMember.entity';
 export * from './entities/payment.entity';
 export * from './entities/proyect.entity';
+export * from './entities/trelloTask.entity';
 
 // error
 export * from './errors/custom.error';
@@ -32,6 +33,7 @@ export * from './datasources/team.datasource';
 export * from './datasources/teamMember.datasource';
 export * from './datasources/payment.datasource';
 export * from './datasources/proyect.datasource';
+export * from './datasources/trelloTask.datasource';
 
 // repository
 export * from './repository/auth.repository';
@@ -48,6 +50,7 @@ export * from './repository/team.repository';
 export * from './repository/teamMember.repository';
 export * from './repository/payment.repository';
 export * from './repository/proyect.repository';
+export * from './repository/trelloTask.repository';
 
 // use-cases
 export * from './use-cases/';

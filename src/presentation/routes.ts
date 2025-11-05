@@ -13,6 +13,7 @@ import { TeamRoutes } from "./team/routes";
 import { TeamMemberRoutes } from "./teamMember/routes";
 import { PaymentRoutes } from "./payment/routes";
 import { ProyectRoutes } from "./proyect/routes";
+import { TrelloTaskRoutes } from "./trelloTask/routes";
 
 export class AppRoutes {
     static get routes(): Router {
@@ -31,6 +32,7 @@ export class AppRoutes {
         router.use('/api/teamMembers', TeamMemberRoutes.routes);
         router.use('/api/payments', PaymentRoutes.routes);
         router.use('/api/proyects', ProyectRoutes.routes);
+        router.use('/api/trelloTasks', TrelloTaskRoutes.routes);
 
         return router;
     }

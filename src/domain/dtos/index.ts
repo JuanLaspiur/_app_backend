@@ -64,6 +64,12 @@ export * from "./payment/updatePayment.dto";
 export * from "./proyect/createProyect.dto";
 export * from "./proyect/updateProyect.dto";
 
+
+// TrelloTask
+export * from "./trelloTask/createTrelloTask.dto";
+
+
+
 // JWT DTO 
 export * from './jwt.dto';
 

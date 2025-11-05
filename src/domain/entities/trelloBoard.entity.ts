@@ -1,17 +1,7 @@
+import { TrelloTaskEntity } from "./trelloTask.entity";
+
 export type TrelloTaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
 
-export class TrelloTaskEntity {
-  constructor(
-    public readonly id: string,
-    public readonly title: string,
-    public readonly description: string = "",
-    public readonly assignees: string[] = [],
-    public readonly dueDate: Date | null = null,
-    public readonly status: TrelloTaskStatus = "TODO",
-    public readonly createdAt: Date = new Date(),
-    public readonly updatedAt: Date = new Date()
-  ) {}
-}
 
 export class TrelloColumnEntity {
   constructor(

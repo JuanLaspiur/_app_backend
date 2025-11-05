@@ -13,6 +13,7 @@ export * from './datasources/team.datasource.impl';
 export * from './datasources/teamMember.datasource.impl';
 export * from './datasources/payment.datasource.impl';
 export * from './datasources/proyect.datasource.impl';
+export * from './datasources/trelloTask.datasource.impl';
 
 
 // repositories
@@ -30,6 +31,7 @@ export * from './repository/team.repository.impl';
 export * from './repository/teamMember.repository.impl';
 export * from './repository/payment.repository.impl';
 export * from './repository/proyect.repository.impl';
+export * from './repository/trelloTask.repository.impl';
 
 // mappers
 export * from './mappers/user.mapper';
@@ -45,3 +47,4 @@ export * from './mappers/team.mapper';
 export * from './mappers/teamMember.mapper';
 export * from './mappers/payment.mapper';
 export * from './mappers/proyect.mapper';
+export * from './mappers/trelloTask.mapper';
